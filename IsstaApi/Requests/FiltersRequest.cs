@@ -46,6 +46,6 @@ namespace Web.Requests
     /// <summary>
     /// Store info for pagination
     /// </summary>
-    public PagingRequest PagingInfo { get; set; }
+    public PagingRequest PagingInfo { get; set; } 
   }
 }

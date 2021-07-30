@@ -10,6 +10,9 @@ namespace Web.Validators
     {
       When(command => command!= null, () =>
       {
+        RuleFor(command => command.PagingInfo)
+        .NotEmpty().WithMessage("{PropertyName} is required");
+
         When(command => command.FlightType != null, () =>
         {
           RuleFor(command => command.FlightType)

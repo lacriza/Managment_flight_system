@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Web.MapperProfile;
+using Web.Middleware;
 
 namespace IsstaApi
 {
@@ -64,6 +65,9 @@ namespace IsstaApi
       app.UseRouting();
 
       app.UseAuthorization();
+
+      // global error handler
+      app.UseMiddleware<ErrorHandlerMiddleware>();
 
       app.UseEndpoints(endpoints =>
       {
