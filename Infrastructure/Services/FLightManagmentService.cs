@@ -1,9 +1,7 @@
 ﻿using Core.POCO;
 using Infrastructure.Interfaces;
-using System;
+using Infrastructure.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services
@@ -20,6 +18,12 @@ namespace Infrastructure.Services
     public async Task<IEnumerable<Flight>> ListAsync()
     {
         return await _flightRepository.GetAllFlightsAsync();
+    }
+
+    public async Task<IEnumerable<Flight>> ListAsync(Filters filters)
+    {
+      //Todo: check if IATA Code Exist in database
+      return await _flightRepository.GetFiltredPagedFlights(filters);
     }
   }
 }

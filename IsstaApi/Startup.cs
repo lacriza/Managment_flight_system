@@ -4,17 +4,10 @@ using Infrastructure.Repository;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Web.MapperProfile;
 
 namespace IsstaApi
@@ -49,6 +42,7 @@ namespace IsstaApi
 
       services.AddSingleton(_ => Configuration);
       services.AddScoped<IFlightRepository, FlightRepository>();
+      services.AddScoped<IAirportRepository, AirportRepository>();
       services.AddScoped<IFlightManagmentService, FLightManagmentService>();
     }
 
@@ -59,7 +53,10 @@ namespace IsstaApi
       {
         app.UseDeveloperExceptionPage();
         app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IsstaApi v1"));
+        app.UseSwaggerUI(c =>
+        {
+          c.SwaggerEndpoint("v1/swagger.json", "MyAPI V1");
+        });
       }
 
       app.UseHttpsRedirection();

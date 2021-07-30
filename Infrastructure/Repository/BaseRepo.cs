@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Infrastructure.Repository
@@ -18,6 +19,14 @@ namespace Infrastructure.Repository
       SqlConnection connection = new SqlConnection(cs);
       connection.Open();
       return connection;
+    }
+
+    public void AddPagingParametres(SqlCommand command, int pageNumber, int pageSize) 
+    {
+      command.Parameters.Add("@PageNumber", SqlDbType.Int);
+      command.Parameters["@PageNumber"].Value = pageNumber;
+      command.Parameters.Add("@RowsOfPage", SqlDbType.Int);
+      command.Parameters["@RowsOfPage"].Value = pageSize;
     }
   }
 }

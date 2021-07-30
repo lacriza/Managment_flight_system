@@ -1,6 +1,6 @@
 ﻿namespace IsstaApi.Models
 {
-  public class Airport
+  public class AirportResponse
   {
     public string Code { get; set; }
 

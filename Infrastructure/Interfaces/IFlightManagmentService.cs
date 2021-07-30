@@ -1,8 +1,6 @@
 ﻿using Core.POCO;
-using System;
+using Infrastructure.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Interfaces
@@ -10,5 +8,7 @@ namespace Infrastructure.Interfaces
   public interface IFlightManagmentService
   {
     Task<IEnumerable<Flight>> ListAsync();
+
+    Task<IEnumerable<Flight>> ListAsync(Filters filters);
   }
 }
