@@ -12,6 +12,7 @@ namespace Web.MapperProfile
     {
       CreateMap<Flight, FlightResponse>();
       CreateMap<Airport, AirportResponse>();
+      CreateMap<FlightRequest, Flight>();
       CreateMap<PagingRequest, PagingInfo>();
       CreateMap<FiltersRequest, Filters>();
     }

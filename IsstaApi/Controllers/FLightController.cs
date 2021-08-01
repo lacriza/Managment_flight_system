@@ -70,5 +70,31 @@ namespace Web.Controllers
       return Ok(resources);
     }
 
+
+    /// <summary>
+    /// Set up new flight.
+    /// </summary>
+    [HttpPost]
+    [Route("add-flight")]
+    [ProducesResponseType(typeof(FlightResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddFlight(Requests.FlightRequest request)
+    {
+      FlightRequestValidator validator = new FlightRequestValidator();
+      ValidationResult results = validator.Validate(request);
+
+      if (!results.IsValid)
+      {
+        foreach (var failure in results.Errors)
+        {
+          return BadRequest("Error: " + failure.ErrorMessage);
+        }
+      }
+
+      var flight = _mapper.Map<Requests.FlightRequest, Flight>(request);
+      var flightNumber = await _flightService.AddAsync(flight);
+      return Ok($"Flight was added with flight number {flightNumber}");
+    }
+
   }
 }

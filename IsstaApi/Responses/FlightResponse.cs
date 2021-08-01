@@ -1,4 +1,5 @@
 ﻿using Core;
+using IsstaApi.Enums;
 using System;
 
 namespace IsstaApi.Models

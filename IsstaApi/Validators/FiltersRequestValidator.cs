@@ -8,31 +8,31 @@ namespace Web.Validators
   {
     public FiltersRequestValidator()
     {
-      When(command => command!= null, () =>
+      When(request => request!= null, () =>
       {
-        RuleFor(command => command.PagingInfo)
+        RuleFor(request => request.PagingInfo)
         .NotEmpty().WithMessage("{PropertyName} is required");
 
-        When(command => command.FlightType != null, () =>
+        When(request => request.FlightType != null, () =>
         {
-          RuleFor(command => command.FlightType)
+          RuleFor(request => request.FlightType)
               .IsInEnum()
               .NotEmpty()
               .WithMessage("{PropertyName} is required");
         });
 
-        When(command => command.DateFrom != null, () =>
+        When(request => request.DateFrom != null, () =>
         {
-          RuleFor(command => command.DateFrom)
+          RuleFor(request => request.DateFrom)
                 .NotEmpty()
                 .WithMessage("{PropertyName} is required")
                 .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))
                 .WithMessage("{PropertyName} must be today or grater");
         });
 
-        When(command => command.DateTo != null, () =>
+        When(request => request.DateTo != null, () =>
         {
-          RuleFor(command => command.DateTo)
+          RuleFor(request => request.DateTo)
                 .NotEmpty()
                 .WithMessage("{PropertyName} is required")
                 .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))

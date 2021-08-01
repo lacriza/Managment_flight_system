@@ -25,19 +25,30 @@ namespace Infrastructure.Services
 
     public async Task<IEnumerable<Flight>> ListAsync(Filters filters)
     {
-      if (!string.IsNullOrEmpty(filters.ToAirportIATACode)) 
+      await ValidateAirportsCodesAsync(filters.ToAirportIATACode);
+      await ValidateAirportsCodesAsync(filters.FromAirportIATACode);
+
+      return await _flightRepository.GetFiltredPagedFlightsAsync(filters);
+    }
+
+    public async Task<string> AddAsync(Flight flight)
+    {
+      await ValidateAirportsCodesAsync(flight.DepartureAirportIATA);
+      await ValidateAirportsCodesAsync(flight.ArrivalAirportIATA);
+
+      flight.FlightNumber = FlightNumberGenerator.Generate(flight.DepartureAirportIATA, flight.ArrivalAirportIATA);
+      flight.TotalPriceNIS = flight.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
+      await _flightRepository.AddFlightAsync(flight);
+      return flight.FlightNumber;
+    }
+
+    private async Task ValidateAirportsCodesAsync(string iata) 
+    {
+      if (!string.IsNullOrEmpty(iata))
       {
-        var toIATA = await _airportRepository.GetAirportByIATACodeAsync(filters.ToAirportIATACode);
+        var toIATA = await _airportRepository.GetAirportByIATACodeAsync(iata);
         if (toIATA.Code is null) throw new ArgumentException("Searched Airport Not Exist in DB.");
       }
-
-      if (!string.IsNullOrEmpty(filters.FromAirportIATACode))
-      {
-        var fromIATA = await _airportRepository.GetAirportByIATACodeAsync(filters.FromAirportIATACode);
-        if (fromIATA.Code is null) throw new ArgumentException("Searched Airport Not Exist in DB.");
-      }
-
-      return await _flightRepository.GetFiltredPagedFlights(filters);
     }
   }
 }

@@ -1,5 +1,6 @@
-﻿using IsstaApi.Models;
+﻿using IsstaApi.Enums;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.Requests
 {
@@ -11,6 +12,7 @@ namespace Web.Requests
     /// <summary>
     /// Possible Flight type:  Regular, LowCost, Charter
     /// </summary>
+    [EnumDataType(typeof(FlightType))]
     public FlightType? FlightType { get; set; }
 
     /// <summary>

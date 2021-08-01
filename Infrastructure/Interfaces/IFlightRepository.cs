@@ -8,6 +8,7 @@ namespace Infrastructure.Interfaces
   public interface IFlightRepository
   {
     Task<IEnumerable<Flight>> GetAllFlightsAsync();
-    Task<IEnumerable<Flight>> GetFiltredPagedFlights(Filters filters);
+    Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters);
+    Task AddFlightAsync(Flight flight);
   }
 }

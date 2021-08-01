@@ -43,7 +43,7 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<IEnumerable<Flight>> GetFiltredPagedFlights(Filters filters)
+    public async Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters)
     {
       List<Flight> flightList = new List<Flight>();
 
@@ -66,6 +66,27 @@ namespace Infrastructure.Repository
           flightList.Add(flight);
         }
         return flightList;
+      }
+    }
+
+    public async Task AddFlightAsync(Flight flight)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @totalPrice)", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
+        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
+        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
+        command.Parameters.Add(new SqlParameter("@depIATA", flight.DepartureAirportIATA));
+        command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
+        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
+        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
+
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
       }
     }
 
@@ -167,17 +188,6 @@ namespace Infrastructure.Repository
 
       AddPagingParametres(command, filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize);
       return command;
-    }
-
-
-    public void Insert(Flight Flight)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Update(Flight Flight)
-    {
-      throw new NotImplementedException();
     }
   }
 }
