@@ -1,0 +1,69 @@
+﻿@model IEnumerable<ClientMVC.Models.FlightViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>
+          @Html.DisplayNameFor(model => model.FlightNumber)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.DepartureDateTime)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.ArrivalDateTime)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.ArrivalAirportIATA)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.DepartureAirportIATA)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.FlightType)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.TotalPriceNIS)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.Comments)
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.FlightNumber)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.DepartureDateTime)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.ArrivalDateTime)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.ArrivalAirportIATA)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.DepartureAirportIATA)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.FlightType)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.TotalPriceNIS)
+        </td>
+        <td>
+          @foreach (var comment in item.Comments)
+          {
+          <div>@comment</div>
+          }
+        </td>
+      </tr>
+}
+    </tbody>
+</table>
