@@ -50,5 +50,36 @@ namespace Infrastructure.Services
         if (toIATA.Code is null) throw new ArgumentException("Searched Airport Not Exist in DB.");
       }
     }
+
+    public async Task<Flight> UpdateAsync(Flight flight)
+    {
+      var flightForUpdating = await _flightRepository.GetByIdAsync(flight.FlightNumber);
+
+      if (flightForUpdating == null)
+        throw new ArgumentException("This Flight Number does not exist in DB.");
+
+      if (flight.DepartureDateTime != default) 
+      {
+        flightForUpdating.DepartureDateTime = flight.DepartureDateTime;
+      }
+
+      if (flight.ArrivalDateTime != default)
+      {
+        flightForUpdating.DepartureDateTime = flight.ArrivalDateTime;
+      }
+
+      if (flight.FlightType != flightForUpdating.FlightType)
+      {
+        flightForUpdating.FlightType = flight.FlightType;
+      }
+
+      if (flight.BasePriceNIS != default && flight.BasePriceNIS != flightForUpdating.BasePriceNIS)
+      {
+        flightForUpdating.BasePriceNIS = flight.BasePriceNIS;       
+      }
+
+      flight.TotalPriceNIS = flightForUpdating.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
+      return await _flightRepository.UpdateByIdAsync(flight);
+    }
   }
 }

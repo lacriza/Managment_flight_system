@@ -7,8 +7,10 @@ namespace Infrastructure.Interfaces
 {
   public interface IFlightRepository
   {
+    Task<Flight> GetByIdAsync(string flightId);
     Task<IEnumerable<Flight>> GetAllFlightsAsync();
     Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters);
     Task AddFlightAsync(Flight flight);
+    Task<Flight> UpdateByIdAsync(Flight flight);
   }
 }

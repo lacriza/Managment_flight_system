@@ -33,7 +33,7 @@ namespace Infrastructure.Repository
           flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
           flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
           flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
-          flight.BasePriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
+          flight.TotalPriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
           flight.ArrivalDateTime = (DateTimeOffset) rdr["arrivalDateTime"];
           flight.DepartureDateTime = (DateTimeOffset) rdr["departureDateTime"];
           flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
@@ -90,12 +90,67 @@ namespace Infrastructure.Repository
       }
     }
 
-    private string CreateFilterCommandText(Filters filters) 
+ 
+
+    public async Task<Flight> GetByIdAsync(string flightId)
+    {
+      Flight flight = new Flight();
+
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "SELECT * FROM Flight WHERE flightNumber = @flightNo", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flightId));
+        
+        SqlDataReader rdr = command.ExecuteReader();
+        while (await rdr.ReadAsync())
+        {
+          flight.FlightNumber = rdr["flightNumber"].ToString();
+          flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
+          flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
+          flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
+          flight.BasePriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
+          flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
+          flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
+          flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
+        }
+        return flight;
+      }
+    }
+
+    public async Task<Flight> UpdateByIdAsync(Flight flight)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "UPDATE Flight SET " +
+          "departureDateTime = @depDate, " +
+          "arrivalDateTime = @arrDate,  " +
+          "flightType = @type, " +
+          "basePriceNIS = @basePrice, " +
+          "totalPriceNIS = @totalPrice " +
+          "WHERE flightNumber = @flightNo", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
+        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
+        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
+        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
+        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
+
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
+        return flight;
+      }
+    }
+
+    private string CreateFilterCommandText(Filters filters)
     {
       string select = "SELECT * FROM Flight WHERE ";
 
       string filter = string.Empty;
-      if (filters.FlightType != null) 
+      if (filters.FlightType != null)
       {
         filter += "[flightType] = @FlightType AND ";
       }
@@ -130,7 +185,7 @@ namespace Infrastructure.Repository
         filter += "[departureAirport] = @FromATACode AND ";
       }
 
-      if (filter.EndsWith("AND ")) 
+      if (filter.EndsWith("AND "))
       {
         filter = filter.Substring(0, filter.Length - 4);
       }

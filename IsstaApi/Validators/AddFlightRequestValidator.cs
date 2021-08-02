@@ -4,9 +4,9 @@ using Web.Requests;
 
 namespace Web.Validators
 {
-  public class FlightRequestValidator : AbstractValidator<FlightRequest>
+  public class AddFlightRequestValidator : AbstractValidator<AddFlightRequest>
   {
-    public FlightRequestValidator()
+    public AddFlightRequestValidator()
     {
       RuleFor(request => request.FlightType)
                .IsInEnum()
@@ -40,6 +40,7 @@ namespace Web.Validators
 
       RuleFor(request => request.BasePriceNIS)
             .NotEmpty()
+            .GreaterThan(0)
             .WithMessage("{PropertyName} is required");
     }
   }

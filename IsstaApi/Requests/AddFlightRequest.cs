@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Requests
 {
-  public class FlightRequest
+  public class AddFlightRequest
   {
     /// <summary>
     /// Date and time of outbound flight.

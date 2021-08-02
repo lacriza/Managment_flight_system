@@ -12,5 +12,7 @@ namespace Infrastructure.Interfaces
     Task<IEnumerable<Flight>> ListAsync(Filters filters);
 
     Task<string> AddAsync(Flight flight);
+
+    Task<Flight> UpdateAsync(Flight flight);
   }
 }
