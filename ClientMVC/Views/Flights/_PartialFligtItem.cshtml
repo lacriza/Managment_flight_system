@@ -1,0 +1,40 @@
+﻿@model ClientMVC.Models.FlightViewModel
+@{
+}
+
+<div class="card">
+  <div class="card-body">
+   
+    <div class="container">
+      <div class="row">
+        <div class="col-2 align-self-center">
+          <h5 class="card-title">@Model.FlightNumber  </h5>
+          <h6 class="card-subtitle text-muted">@Model.FlightType</h6>
+          <!-- Button -->
+          <div class="mt-2 text-md-start">
+            <a class="btn btn-navy shadow lift me-1" asp-area="" asp-controller="Flights" asp-action="Edit">Edit flight</a>
+          </div>
+        </div>
+        <div class="col-4 align-self-center">
+          <p class="card-text">Departure: <span class="main-color">@Model.DepartureAirportIATA </span> @Html.ValueFor(model => model.DepartureDateTime, "{0:MM/dd/yyyy hh:mm tt}")</p>
+          <p class="card-text">Arrival: <span class="main-color"> @Model.ArrivalAirportIATA </span>@Html.ValueFor(model => model.ArrivalDateTime, "{0:MM/dd/yyyy hh:mm tt}")</p>
+        </div>
+        <div class="col-2 align-self-center">
+          <h6 class="card-subtitle text-muted">@Model.TotalPriceNIS NIS </h6>
+        </div>
+        <div class="col-4 align-self-center">
+          @foreach (var comment in Model?.Comments)
+          {
+            <small>
+              @comment
+            </small><br />
+  }
+</div>
+      </div>
+    </div>
+
+
+    
+  
+  </div>
+  </div>

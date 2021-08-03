@@ -19,5 +19,13 @@ namespace Core.POCO
 
     public decimal TotalPriceNIS { get; set; }
 
+    public string[] Comments => FlightType switch
+    {
+      FlightType.Regular => new string[2] { CommentsConstants.SeatsIncluded, CommentsConstants.ApprovedFlight },
+      FlightType.LowCost => new string[3] { CommentsConstants.FlightDoesNotIncludeLuggage, CommentsConstants.FlightDoesNotIncludeMeals, CommentsConstants.FullCancellationFee },
+      FlightType.Charter => new string[2] { CommentsConstants.DepartureTimeMayVary, CommentsConstants.SeatSelectionOnlyAtCheckIn },
+      _ => Array.Empty<string>(),
+    };
+
   }
 }

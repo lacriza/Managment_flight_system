@@ -1,69 +1,100 @@
-﻿@model IEnumerable<ClientMVC.Models.FlightViewModel>
+﻿@model ClientMVC.Models.PagedResponse<ClientMVC.Models.FlightViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+  ViewData["Title"] = "Index";
 }
 
-<table class="table">
-    <thead>
-      <tr>
-        <th>
-          @Html.DisplayNameFor(model => model.FlightNumber)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.DepartureDateTime)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.ArrivalDateTime)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.ArrivalAirportIATA)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.DepartureAirportIATA)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.FlightType)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.TotalPriceNIS)
-        </th>
-        <th>
-          @Html.DisplayNameFor(model => model.Comments)
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-      <tr>
-        <td>
-          @Html.DisplayFor(modelItem => item.FlightNumber)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.DepartureDateTime)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.ArrivalDateTime)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.ArrivalAirportIATA)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.DepartureAirportIATA)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.FlightType)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.TotalPriceNIS)
-        </td>
-        <td>
-          @foreach (var comment in item.Comments)
+<div class="container">
+  <div class="row align-items-center">
+    <div class="col-12 col-md-5 col-lg-6 order-md-2">
+
+      <!-- Image -->
+      <img src="@Url.Content("~/Content/Images/undraw_connected_world_wuay.svg")" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate" alt="..." data-aos="fade-up" data-aos-delay="100">
+
+    </div>
+    <div class="col-12 col-md-7 col-lg-6 order-md-1 aos-init aos-animate" data-aos="fade-up">
+
+      <!-- Heading -->
+      <h2 class="display-4 text-center text-md-start">
+        Welcome to <span class="main-color">Flight</span> Managment System.
+      </h2>
+
+      <!-- Text -->
+      <p class="lead text-center text-md-start text-muted mb-6 mb-lg-8">
+        Filter, add flight, update flight details.
+      </p>
+
+      <!-- Button -->
+      <div class="text-center text-md-start">
+        <a class="btn btn-navy shadow lift me-1" asp-area="" asp-controller="Flights" asp-action="Add">Add flight</a>
+      </div>
+
+    </div>
+  </div> <!-- / .row -->
+</div>
+
+<div class="mt-3 mb-1">
+  @if (Model != null)
+  {
+    @foreach (var item in Model.Data)
+    {
+      @await Html.PartialAsync("_PartialFligtItem.cshtml", item)
+    }
+  }
+</div>
+
+<!-- Pagination -->
+<ul class="pagination float-right">
+  @for (int i = 1; i < Model.TotalPages; i++)
+  {
+
+    @if (i == 1 && Model.PreviousPage)
+    {
+      <li class="page-item">
+        @Html.ActionLink("Previous", "Index", "Flights",
+         new PagingRequest()
+         {
+           PageNumber = @i - 1,
+         },
+         new { @class = "page-link" })
+      </li>
+    }
+
+    if (Model.PageNumber == i)
+    {
+      <li class="page-item active ">
+        @Html.ActionLink(@i.ToString(), "Index", "Flights",
+          new PagingRequest()
           {
-          <div>@comment</div>
-          }
-        </td>
-      </tr>
-}
-    </tbody>
-</table>
+            PageNumber = @i,
+          },
+          new { @class = "page-link" })
+      </li>
+    }
+    else
+    {
+      <li class="page-item ">
+        @Html.ActionLink(@i.ToString(), "Index", "Flights",
+          new PagingRequest()
+          {
+            PageNumber = @i,
+          },
+          new { @class = "page-link" })
+      </li>
+    }
+
+
+    @if (i == Model.TotalPages - 1 && Model.NextPage)
+    {
+      <li class="page-item">
+        @Html.ActionLink("Next", "Index", "Flights",
+         new PagingRequest()
+         {
+           PageNumber = @i + 1,
+         },
+         new { @class = "page-link" })
+      </li>
+    }
+  }
+</ul>
+<!-- / Pagination -->

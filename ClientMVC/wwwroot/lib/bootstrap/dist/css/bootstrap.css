@@ -2523,8 +2523,8 @@ fieldset:disabled a.btn {
 
 .btn-info {
   color: #fff;
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: #0DCAF0;
+  border-color: #0DCAF0;
 }
 
 .btn-info:hover {
@@ -4848,7 +4848,7 @@ input[type="button"].btn-block {
   padding: 0.5rem 0.75rem;
   margin-left: -1px;
   line-height: 1.25;
-  color: #007bff;
+  color: #0DCAF0;
   background-color: #fff;
   border: 1px solid #dee2e6;
 }
@@ -4881,8 +4881,8 @@ input[type="button"].btn-block {
 .page-item.active .page-link {
   z-index: 1;
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #3f3d56;
+  border-color: #3f3d56;
 }
 
 .page-item.disabled .page-link {

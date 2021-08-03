@@ -3,6 +3,7 @@ using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services
@@ -23,12 +24,15 @@ namespace Infrastructure.Services
         return await _flightRepository.GetAllFlightsAsync();
     }
 
-    public async Task<IEnumerable<Flight>> ListAsync(Filters filters)
+    public async Task<PagedResponse<List<Flight>>> ListAsync(Filters filters)
     {
       await ValidateAirportsCodesAsync(filters.ToAirportIATACode);
       await ValidateAirportsCodesAsync(filters.FromAirportIATACode);
 
-      return await _flightRepository.GetFiltredPagedFlightsAsync(filters);
+      var list = await _flightRepository.GetFiltredPagedFlightsAsync(filters);
+      var totalRecords = await _flightRepository.TotalFlightsAsync();
+      var pagedList = list.ToList().CreatePagedReponse<Flight>(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
+      return pagedList;
     }
 
     public async Task<string> AddAsync(Flight flight)
@@ -38,6 +42,7 @@ namespace Infrastructure.Services
 
       flight.FlightNumber = FlightNumberGenerator.Generate(flight.DepartureAirportIATA, flight.ArrivalAirportIATA);
       flight.TotalPriceNIS = flight.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
+
       await _flightRepository.AddFlightAsync(flight);
       return flight.FlightNumber;
     }

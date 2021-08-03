@@ -12,5 +12,6 @@ namespace Infrastructure.Interfaces
     Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters);
     Task AddFlightAsync(Flight flight);
     Task<Flight> UpdateByIdAsync(Flight flight);
+    Task<int> TotalFlightsAsync();
   }
 }

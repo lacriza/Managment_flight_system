@@ -2,56 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ClientMVC.Controllers
 {
   public class FlightsController : Controller
   {
-    private readonly ILogger<FlightsController> _logger;
-    private readonly IConfiguration _configuration;
-    private readonly string _apiBaseUrl;
+    private readonly RESTHelper _restHelper;
 
     public FlightsController(ILogger<FlightsController> logger, IConfiguration configuration)
     {
-      _logger = logger;
-      _configuration = configuration;
-      _apiBaseUrl = _configuration.GetValue<string>("WebAPIBaseUrl");
+      _restHelper = new RESTHelper(logger, configuration);
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> IndexAsync(FiltersRequest page, PagingRequest paging)
     {
-      IEnumerable<FlightViewModel> flights = null;
-      using (var client = new HttpClient())
-      {
-        client.BaseAddress = new Uri(_apiBaseUrl);
-        
-        //HTTP GET
-        var responseTask = client.GetAsync("/api/FLight/all");
-        responseTask.Wait();
-
-        var result = responseTask.Result;
-        if (result.IsSuccessStatusCode)
-        {
-          var readTask = result.Content.ReadAsAsync<IList<FlightViewModel>>();
-          readTask.Wait();
-
-          flights = readTask.Result;
-        }
-        else //web api sent error response 
-        {
-          //log response status here..
-
-          flights = Enumerable.Empty<FlightViewModel>();
-
-          ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
-        }
-      }
-      return View(flights);
+      page.PagingInfo = paging;
+      var flightsPaging = await _restHelper.GetPageList<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", page);
+      return View(flightsPaging);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

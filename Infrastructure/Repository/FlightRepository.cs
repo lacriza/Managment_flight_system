@@ -69,6 +69,23 @@ namespace Infrastructure.Repository
       }
     }
 
+    public async Task<int> TotalFlightsAsync()
+    {
+      using (var connection = GetOpenConnection())
+      {
+        int totalFlights = 0;
+        SqlCommand command = new SqlCommand(
+          "SELECT COUNT(*) as total FROM Flight", connection);
+
+        SqlDataReader rdr = command.ExecuteReader();
+        while (await rdr.ReadAsync())
+        {
+           totalFlights = Convert.ToInt32(rdr["total"]);
+        }
+        return totalFlights;
+      }
+    }
+
     public async Task AddFlightAsync(Flight flight)
     {
       using (var connection = GetOpenConnection())
@@ -188,6 +205,11 @@ namespace Infrastructure.Repository
       if (filter.EndsWith("AND "))
       {
         filter = filter.Substring(0, filter.Length - 4);
+      }
+
+      if (select.EndsWith("WHERE "))
+      {
+        select = select.Substring(0, select.Length - 6);
       }
 
       string paging = "ORDER BY flightNumber " +

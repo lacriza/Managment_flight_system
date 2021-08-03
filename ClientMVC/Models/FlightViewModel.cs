@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClientMVC.Models
 {
   public class FlightViewModel
   {
     public string FlightNumber { get; set; }
+
     public DateTimeOffset DepartureDateTime { get; set; }
 
     public DateTimeOffset ArrivalDateTime { get; set; }

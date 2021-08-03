@@ -64,11 +64,10 @@ namespace Web.Controllers
         }
       }
 
-      var filters = _mapper.Map<Requests.FiltersRequest, Filters>(request);
+      var filters = _mapper.Map<FiltersRequest, Filters>(request);
       var flights = await _flightService.ListAsync(filters);
-      var resources = _mapper.Map<IEnumerable<Flight>, IEnumerable<FlightResponse>>(flights);
 
-      return Ok(resources);
+      return Ok(flights);
     }
 
 
