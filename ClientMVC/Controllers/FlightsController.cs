@@ -16,10 +16,10 @@ namespace ClientMVC.Controllers
       _restHelper = new RESTHelper(logger, configuration);
     }
 
-    public async Task<ActionResult> IndexAsync(FiltersRequest page, PagingRequest paging)
+    public async Task<ActionResult> IndexAsync(FiltersRequest filters, PagingRequest paging)
     {
-      page.PagingInfo = paging;
-      var flightsPaging = await _restHelper.GetPageList<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", page);
+      filters.PagingInfo = paging;
+      var flightsPaging = await _restHelper.GetPageList<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
       return View(flightsPaging);
     }
 

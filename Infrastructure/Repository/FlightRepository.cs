@@ -43,10 +43,10 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters)
+    public async Task<(IEnumerable<Flight>, int)> GetFiltredPagedFlightsAsync(Filters filters)
     {
       List<Flight> flightList = new List<Flight>();
-
+      int total = 0;
       using (var connection = GetOpenConnection())
       {
         SqlCommand command = new SqlCommand(CreateFilterCommandText(filters), connection);
@@ -63,9 +63,10 @@ namespace Infrastructure.Repository
           flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
           flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
           flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
+          total = Convert.ToInt32(rdr["TotalRows"]);
           flightList.Add(flight);
         }
-        return flightList;
+        return (flightList, total);
       }
     }
 
@@ -164,7 +165,7 @@ namespace Infrastructure.Repository
 
     private string CreateFilterCommandText(Filters filters)
     {
-      string select = "SELECT * FROM Flight WHERE ";
+      string select = "SELECT *, TotalRows = COUNT(*) OVER() FROM Flight WHERE ";
 
       string filter = string.Empty;
       if (filters.FlightType != null)
@@ -207,16 +208,16 @@ namespace Infrastructure.Repository
         filter = filter.Substring(0, filter.Length - 4);
       }
 
-      if (select.EndsWith("WHERE "))
+      var allFilters = select + filter;
+      if (allFilters.EndsWith("WHERE "))
       {
-        select = select.Substring(0, select.Length - 6);
+        allFilters = allFilters.Substring(0, select.Length - 6);
       }
 
       string paging = "ORDER BY flightNumber " +
                       "OFFSET(@PageNumber - 1) * @RowsOfPage ROWS " +
                       "FETCH NEXT @RowsOfPage ROWS ONLY ";
-      var result = select + filter + paging;
-      return result;
+      return allFilters + paging;
     }
 
     private SqlCommand CreateFilterParameters(Filters filters, SqlCommand command)

@@ -30,8 +30,8 @@ namespace Infrastructure.Services
       await ValidateAirportsCodesAsync(filters.FromAirportIATACode);
 
       var list = await _flightRepository.GetFiltredPagedFlightsAsync(filters);
-      var totalRecords = await _flightRepository.TotalFlightsAsync();
-      var pagedList = list.ToList().CreatePagedReponse<Flight>(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
+      var totalRecords = list.Item2;
+      var pagedList = list.Item1.ToList().CreatePagedReponse<Flight>(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
       return pagedList;
     }
 

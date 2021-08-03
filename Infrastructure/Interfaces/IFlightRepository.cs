@@ -9,9 +9,9 @@ namespace Infrastructure.Interfaces
   {
     Task<Flight> GetByIdAsync(string flightId);
     Task<IEnumerable<Flight>> GetAllFlightsAsync();
-    Task<IEnumerable<Flight>> GetFiltredPagedFlightsAsync(Filters filters);
     Task AddFlightAsync(Flight flight);
     Task<Flight> UpdateByIdAsync(Flight flight);
     Task<int> TotalFlightsAsync();
+    Task<(IEnumerable<Flight>, int)> GetFiltredPagedFlightsAsync(Filters filters);
   }
 }

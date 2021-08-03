@@ -27,3 +27,28 @@ a {
   background-color: #3f3d56;
   border-color: #3f3d56;
 }
+
+input[type='radio']:after {
+  width: 16px;
+  height: 16px;
+  border-radius: 16px;
+  position: relative;
+  background-color: transparent;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+}
+
+input[type='radio']:checked:after {
+  width: 11px;
+  height: 11px;
+  border-radius: 11px;
+  top: -6px;
+  left: 1px;
+  position: relative;
+  background-color: #0DCAF0;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid white;
+}

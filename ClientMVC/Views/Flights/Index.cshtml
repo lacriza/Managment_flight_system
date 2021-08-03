@@ -26,75 +26,85 @@
 
       <!-- Button -->
       <div class="text-center text-md-start">
-        <a class="btn btn-navy shadow lift me-1" asp-area="" asp-controller="Flights" asp-action="Add">Add flight</a>
+        <a class="btn btn-navy shadow lift me-1 btn-lg " asp-area="" asp-controller="Flights" asp-action="Add">Add flight</a>
       </div>
 
     </div>
   </div> <!-- / .row -->
 </div>
 
-<div class="mt-3 mb-1">
-  @if (Model != null)
-  {
-    @foreach (var item in Model.Data)
-    {
-      @await Html.PartialAsync("_PartialFligtItem.cshtml", item)
-    }
-  }
-</div>
-
-<!-- Pagination -->
-<ul class="pagination float-right">
-  @for (int i = 1; i < Model.TotalPages; i++)
-  {
-
-    @if (i == 1 && Model.PreviousPage)
-    {
-      <li class="page-item">
-        @Html.ActionLink("Previous", "Index", "Flights",
-         new PagingRequest()
-         {
-           PageNumber = @i - 1,
-         },
-         new { @class = "page-link" })
-      </li>
-    }
-
-    if (Model.PageNumber == i)
-    {
-      <li class="page-item active ">
-        @Html.ActionLink(@i.ToString(), "Index", "Flights",
-          new PagingRequest()
+<div class="row">
+  <div class="col-1"> </div>
+    <div class="col-8">
+      <div class="mt-3 mb-1 ">
+        @if (Model != null)
+        {
+          @foreach (var item in Model.Data)
           {
-            PageNumber = @i,
-          },
-          new { @class = "page-link" })
-      </li>
-    }
-    else
-    {
-      <li class="page-item ">
-        @Html.ActionLink(@i.ToString(), "Index", "Flights",
-          new PagingRequest()
+            @await Html.PartialAsync("_PartialFligtItem.cshtml", item)
+          }
+        }
+        <!-- Pagination -->
+        <ul class="pagination float-right">
+          @for (int i = 1; i < Model.TotalPages; i++)
           {
-            PageNumber = @i,
-          },
-          new { @class = "page-link" })
-      </li>
-    }
+
+            @if (i == 1 && Model.PreviousPage)
+            {
+              <li class="page-item">
+                @Html.ActionLink("Previous", "Index", "Flights",
+                 new PagingRequest()
+                 {
+                   PageNumber = @i - 1,
+                 },
+                 new { @class = "page-link" })
+              </li>
+            }
+
+            if (Model.PageNumber == i)
+            {
+              <li class="page-item active ">
+                @Html.ActionLink(@i.ToString(), "Index", "Flights",
+                  new PagingRequest()
+                  {
+                    PageNumber = @i,
+                  },
+                  new { @class = "page-link" })
+              </li>
+            }
+            else
+            {
+              <li class="page-item ">
+                @Html.ActionLink(@i.ToString(), "Index", "Flights",
+                  new PagingRequest()
+                  {
+                    PageNumber = @i,
+                  },
+                  new { @class = "page-link" })
+              </li>
+            }
 
 
-    @if (i == Model.TotalPages - 1 && Model.NextPage)
-    {
-      <li class="page-item">
-        @Html.ActionLink("Next", "Index", "Flights",
-         new PagingRequest()
-         {
-           PageNumber = @i + 1,
-         },
-         new { @class = "page-link" })
-      </li>
-    }
-  }
-</ul>
-<!-- / Pagination -->
+            @if (i == Model.TotalPages - 1 && Model.NextPage)
+            {
+              <li class="page-item">
+                @Html.ActionLink("Next", "Index", "Flights",
+                 new PagingRequest()
+                 {
+                   PageNumber = @i + 1,
+                 },
+                 new { @class = "page-link" })
+              </li>
+            }
+          }
+        </ul>
+        <!-- / Pagination -->
+      </div>
+    </div>
+    <div class="col-2">
+      @await Html.PartialAsync("_PartialFilters.cshtml", new FiltersRequest())
+    </div>
+  </div>
+
+
+
