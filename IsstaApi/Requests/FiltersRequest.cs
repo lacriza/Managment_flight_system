@@ -30,6 +30,7 @@ namespace Web.Requests
     /// </summary>
     public decimal? PriceFromInNIS { get; set; }
 
+    public string PriceRange { get; set; }
     /// <summary>
     /// Search Flight with price up to PriceToInNIS
     /// </summary>

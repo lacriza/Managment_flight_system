@@ -24,6 +24,7 @@ namespace ClientMVC.Models
     /// </summary>
     public DateTime? DateTo { get; set; }
 
+    public string PriceRange { get; set; }
     /// <summary>
     /// Search Flight with price starting from this PriceFromInNIS
     /// </summary>
