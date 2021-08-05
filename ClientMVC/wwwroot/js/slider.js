@@ -3,7 +3,7 @@
     $("#slider-range").slider({
       range: true,
       min: 0,
-      max: 500,
+      max: 1000,
       values: [localStorage.getItem('priceFrom'), localStorage.getItem('priceTo')],
       slide: function (event, ui) {
         var to = ui.values[1];

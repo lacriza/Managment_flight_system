@@ -9,6 +9,10 @@ a {
   border-color: #0DCAF0;
 }
 
+.text-error {
+  color: #F50057;
+}
+
 .main-color {
   color: #0DCAF0;
 }
@@ -22,6 +26,9 @@ a {
   color: #0DCAF0 ;
 }
 
+.btn:hover {
+  color: #0DCAF0;
+}
 .page-item.active .page-link {
   color: white;
   background-color: #3f3d56;

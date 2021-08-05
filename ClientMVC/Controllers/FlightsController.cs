@@ -16,11 +16,33 @@ namespace ClientMVC.Controllers
       _restHelper = new RESTHelper(logger, configuration);
     }
 
-    public async Task<ActionResult> IndexAsync(FiltersRequest filters, PagingRequest paging)
+    public async Task<ActionResult> Index(FiltersRequest filters, PagingRequest paging)
     {
       filters.PagingInfo = paging;
-      var flightsPaging = await _restHelper.GetPageList<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
+      var flightsPaging = await _restHelper.POST<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
       return View(flightsPaging);
+    }
+
+    // GET: FlightsController/Add
+    public ActionResult Add()
+    {
+      return View();
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<ActionResult> Add(AddFlightViewModel flight)
+    {
+      try
+      {
+          var message = await _restHelper.POST<string, AddFlightViewModel>("/api/FLight/add-flight", flight);
+          return RedirectToAction(nameof(Index));
+      }
+      catch
+      {
+
+        return View();
+      }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

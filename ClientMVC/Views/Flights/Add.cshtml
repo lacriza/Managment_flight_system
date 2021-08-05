@@ -1,0 +1,114 @@
+﻿@model ClientMVC.Models.AddFlightViewModel
+
+<div class="row align-items-lg-start mt-2 mb-1 ml-2">
+  <a asp-action="Index" class="btn btn-navy shadow lift">Back to List</a>
+</div>
+
+<div class="container">
+  
+  <div class="row align-items-center">
+    <div class="col-12 col-md-5 col-lg-6 order-md-2">
+      <img src="@Url.Content("~/Content/Images/undraw_aircraft_fbvl.svg")" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate" alt="..." data-aos="fade-up" data-aos-delay="100">
+    </div>
+    <div class="col-12 col-md-5 col-lg-6 order-md-1 aos-init aos-animate" data-aos="fade-up">
+      <h2 class="display-4 text-center text-md-start main-color">
+        Add Flight
+      </h2>
+    </div>
+
+  </div>
+</div>
+
+<form asp-action="Add" class="column container">
+  <div class="row">
+    <div class="col-12 col-md-4 col-lg-4 ">
+      <div class="form-group">
+        @await Html.PartialAsync("~/Views/Shared/_PartialAirportsDropdown.cshtml", new AirportViewModel()
+   {
+     SelectedOption = "DepartureAirportIATA",
+     SelectOptions = new List<SelectListItem>() { new SelectListItem { Value ="2", Text = "f" } }
+   })
+      </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4 ">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-4 col-lg-4 ">
+      <div class="form-group">
+        @Html.LabelFor(model => model.DepartureDateTime, "Departure Date Time:", new { @class = "form-check-label" })
+        @Html.EditorFor(model => model.DepartureDateTime, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.DepartureDateTime, "", new { @class = "text-error" })
+      </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4 ">
+      <div class="form-group">
+        @Html.LabelFor(model => model.ArrivalDateTime, "Arrival Date Time:", new { @class = "form-check-label" })
+        @Html.EditorFor(model => model.ArrivalDateTime, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.ArrivalDateTime, "", new { @class = "text-error" })
+      </div>
+    </div>
+  </div>
+
+  <div class="row align-items-end">
+    <div class="col-12 col-md-4 col-lg-4 ">
+      <div class="form-group">
+        @Html.LabelFor(model => model.BasePriceNIS, "Base price:", new { @class = "form-check-label" })
+        @Html.EditorFor(model => model.BasePriceNIS, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(m => m.BasePriceNIS, "", new { @class = "text-error" })
+      </div>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2 ">
+      <div class="form-group center-block">
+        <div class="form-check">
+          @Html.RadioButtonFor(model => model.FlightType, "Regular", new { @class = "form-check-input", @name = "FlightType" })
+          @Html.LabelFor(model => model.FlightType, "Regular flight", new { @class = "form-check-label" })
+        </div>
+        <div class="form-check">
+          @Html.RadioButtonFor(model => model.FlightType, "LowCost", new { @class = "form-check-input", @name = "FlightType" })
+          @Html.LabelFor(model => model.FlightType, "Low cost flight", new { @class = "form-check-label" })
+        </div>
+        <div class="form-check ">
+          @Html.RadioButtonFor(model => model.FlightType, "Charter", new { @class = "form-check-input", @name = "FlightType" })
+          @Html.LabelFor(model => model.FlightType, "Charter flight", new { @class = "form-check-label" })
+        </div>
+        @Html.ValidationMessageFor(m => m.FlightType, "", new { @class = "text-error" })
+      </div>
+    </div>
+    <div class="col-12 col-md-2 col-lg-2">
+      <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-navy btn-lg btn-block " />
+      </div>
+    </div>
+  </div>
+</form>
+
+    @*<div class="col-12 col-md-9 col-lg-9 m-auto">
+
+        <div class="form-group">
+          <label asp-for="ArrivalAirportIATA" class="control-label"></label>
+          <input asp-for="ArrivalAirportIATA" class="form-control" />
+          <span asp-validation-for="ArrivalAirportIATA" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="DepartureAirportIATA" class="control-label"></label>
+          <input asp-for="DepartureAirportIATA" class="form-control" />
+          <span asp-validation-for="DepartureAirportIATA" class="text-danger"></span>
+        </div>
+      
+        <div class="form-group">
+          <label asp-for="BasePriceNIS" class="control-label"></label>
+          <input asp-for="BasePriceNIS" class="form-control" />
+          <span asp-validation-for="BasePriceNIS" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+      </form>
+    </div>*@
+
+
+
+    @section Scripts {
+      @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

@@ -45,8 +45,7 @@ namespace ClientMVC
     }
 
 
-    //HTTP POST
-    public async Task<TResultModel> GetPageList<TResultModel, TRequest>(string endpoint, TRequest request)
+    public async Task<TResultModel> POST<TResultModel, TRequest>(string endpoint, TRequest request)
     {
       using (var client = new HttpClient())
       {
@@ -67,5 +66,6 @@ namespace ClientMVC
         }
       }
     }
+   
   }
 }
