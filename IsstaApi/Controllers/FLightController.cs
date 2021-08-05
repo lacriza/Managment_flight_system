@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Web.MapperProfile;
 using Web.Requests;
 using Web.Validators;
 
@@ -53,6 +54,7 @@ namespace Web.Controllers
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetByFilter(FiltersRequest request)
     {
+      request.PriceRangeMap();
       FiltersRequestValidator validator = new FiltersRequestValidator();
       ValidationResult results = validator.Validate(request);
 

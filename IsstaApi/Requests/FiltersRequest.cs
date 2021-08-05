@@ -31,6 +31,7 @@ namespace Web.Requests
     public decimal? PriceFromInNIS { get; set; }
 
     public string PriceRange { get; set; }
+
     /// <summary>
     /// Search Flight with price up to PriceToInNIS
     /// </summary>
@@ -49,6 +50,6 @@ namespace Web.Requests
     /// <summary>
     /// Store info for pagination
     /// </summary>
-    public PagingRequest PagingInfo { get; set; } 
+    public PagingRequest PagingInfo { get; set; }
   }
 }
