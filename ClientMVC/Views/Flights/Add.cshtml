@@ -23,14 +23,17 @@
   <div class="row">
     <div class="col-12 col-md-4 col-lg-4 ">
       <div class="form-group">
-        @await Html.PartialAsync("~/Views/Shared/_PartialAirportsDropdown.cshtml", new AirportViewModel()
-   {
-     SelectedOption = "DepartureAirportIATA",
-     SelectOptions = new List<SelectListItem>() { new SelectListItem { Value ="2", Text = "f" } }
-   })
+        @Html.LabelFor(x => x.DepartureAirportIATA, "Departure Airport Code:", new { @class = "form-check-label" })
+        @Html.Action("Dropdown", "Airport", new { fieildForName = "DepartureAirportIATA" })
+        @Html.ValidationMessageFor(x => x.DepartureAirportIATA, "", new { @class = "text-error" })
       </div>
     </div>
     <div class="col-12 col-md-4 col-lg-4 ">
+      <div class="form-group">
+        @Html.LabelFor(x => x.ArrivalAirportIATA, "Arrival Airport Code:", new { @class = "form-check-label" })
+        @Html.Action("Dropdown", "Airport", new { fieildForName = "ArrivalAirportIATA" })
+        @Html.ValidationMessageFor(x => x.ArrivalAirportIATA, "", new { @class = "text-error" })
+      </div>
     </div>
   </div>
   <div class="row">

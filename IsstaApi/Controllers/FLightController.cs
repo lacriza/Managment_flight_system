@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Web.MapperProfile;
 using Web.Requests;
 using Web.Validators;
@@ -58,19 +59,18 @@ namespace Web.Controllers
       FiltersRequestValidator validator = new FiltersRequestValidator();
       ValidationResult results = validator.Validate(request);
 
-      if (!results.IsValid)
+      var validate = IsOK(results);
+      if (validate.Item1)
       {
-        foreach (var failure in results.Errors)
-        {
-          return BadRequest( "Error: " + failure.ErrorMessage);
-        }
+        var filters = _mapper.Map<FiltersRequest, Filters>(request);
+        var flights = await _flightService.ListAsync(filters);
+
+        return Ok(flights);
       }
 
-      var filters = _mapper.Map<FiltersRequest, Filters>(request);
-      var flights = await _flightService.ListAsync(filters);
-
-      return Ok(flights);
+      return BadRequest(validate.Item2);  
     }
+
 
 
     /// <summary>
@@ -85,17 +85,15 @@ namespace Web.Controllers
       AddFlightRequestValidator validator = new AddFlightRequestValidator();
       ValidationResult results = validator.Validate(request);
 
-      if (!results.IsValid)
+      var validate = IsOK(results);
+      if (validate.Item1)
       {
-        foreach (var failure in results.Errors)
-        {
-          return BadRequest("Error: " + failure.ErrorMessage);
-        }
+        var flight = _mapper.Map<AddFlightRequest, Flight>(request);
+        var flightNumber = await _flightService.AddAsync(flight);
+        return Ok($"Flight added with flight number {flightNumber}");
       }
 
-      var flight = _mapper.Map<AddFlightRequest, Flight>(request);
-      var flightNumber = await _flightService.AddAsync(flight);
-      return Ok($"Flight added with flight number {flightNumber}");
+      return BadRequest(validate.Item2);
     }
 
     /// <summary>
@@ -110,19 +108,33 @@ namespace Web.Controllers
       UpdateFlightRequestValidator validator = new UpdateFlightRequestValidator();
       ValidationResult results = validator.Validate(request);
 
-      if (!results.IsValid)
+
+      var validate = IsOK(results);
+      if (validate.Item1) 
       {
-        foreach (var failure in results.Errors)
-        {
-          return BadRequest("Error: " + failure.ErrorMessage);
-        }
+        var flight = _mapper.Map<UpdateFlightRequest, Flight>(request);
+        await _flightService.UpdateAsync(flight);
+
+        return Ok($"Flight with flight number {request.FlightNumber} updated ");
       }
 
-      var flight = _mapper.Map<UpdateFlightRequest, Flight>(request);
-      
-      await _flightService.UpdateAsync(flight);
-      return Ok($"Flight with flight number {request.FlightNumber} updated ");
+      return BadRequest(validate.Item2);
     }
 
-}
+
+    private (bool, string) IsOK(ValidationResult results) 
+    {
+      if (!results.IsValid)
+      {
+        string errors = string.Empty;
+        foreach (var failure in results.Errors)
+        {
+          errors += failure.ErrorMessage;
+        }
+        return (false, errors);
+      }
+      return (true, string.Empty);
+    }
+
+  }
 }

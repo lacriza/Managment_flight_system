@@ -15,12 +15,18 @@ namespace ClientMVC.Controllers
     {
       _restHelper = new RESTHelper(logger, configuration);
     }
-    public async Task<IActionResult> Index(AirportViewModel model)
+
+ 
+    public async Task<IActionResult> Dropdown(string fieildForName)
     {
       var airports = await _restHelper.GetIList<AirportModel>("/api/Airport/all");
-      var codes = airports.Select(s => new SelectListItem { Value = s.Code, Text = s.Code });
-      model.SelectOptions = codes;
-      return View(model);
+      var codes = airports.Select(s => new SelectListItem { Value = s.Code, Text = $"[{s.Code}] {s.Name}"});
+      var model = new AirportViewModel
+      {
+        SelectOptions = codes,
+        SelectedOption = fieildForName
+      };
+      return PartialView("_PartialAirportsDropdown", model); ;
     }
   }
 }

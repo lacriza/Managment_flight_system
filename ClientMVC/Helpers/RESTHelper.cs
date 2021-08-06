@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ClientMVC.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -45,8 +46,9 @@ namespace ClientMVC
     }
 
 
-    public async Task<TResultModel> POST<TResultModel, TRequest>(string endpoint, TRequest request)
+    public async Task<Response<TResultModel>> POST<TResultModel, TRequest>(string endpoint, TRequest request)
     {
+      var response = new Response<TResultModel>();
       using (var client = new HttpClient())
       {
         var serilizedContent = JsonConvert.SerializeObject(request);
@@ -54,15 +56,17 @@ namespace ClientMVC
         client.BaseAddress = new Uri(_apiBaseUrl);
       
         var result = await client.PostAsync(endpoint, content);
+        response.IsSuccessfull = result.IsSuccessStatusCode;
         if (result.IsSuccessStatusCode)
         {
           var readTask = await result.Content.ReadAsAsync<TResultModel>();
-          return readTask;
+          response.Data = readTask;
+          return response;
         }
-        else //web api sent error response 
+        else 
         {
-          _logger.LogError("Server error during POST request");
-          return default(TResultModel);
+          _logger.LogError("Smg Bad happend");
+          return response;
         }
       }
     }

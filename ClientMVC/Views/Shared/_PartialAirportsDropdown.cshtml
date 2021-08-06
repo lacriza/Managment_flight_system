@@ -1,4 +1,3 @@
 ﻿@model AirportViewModel
 
-
-@Html.DropDownListFor(x => x.SelectedOption, Model.SelectOptions, "Select")
+@Html.DropDownList(Model.SelectedOption, Model.SelectOptions, new { @class = "dropdown form-control" })

@@ -46,7 +46,6 @@ namespace ClientMVC.Models
     /// Flight price will be calculated automatically based on the base price.
     /// </summary>
     [Required]
-    [Range(0, 999.99)]
     public decimal BasePriceNIS { get; set; }
   }
 }

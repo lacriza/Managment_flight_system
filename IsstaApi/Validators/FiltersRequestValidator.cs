@@ -25,18 +25,14 @@ namespace Web.Validators
         {
           RuleFor(request => request.DateFrom)
                 .NotEmpty()
-                .WithMessage("{PropertyName} is required")
-                .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))
-                .WithMessage("{PropertyName} must be today or grater");
+                .WithMessage("{PropertyName} is required");
         });
 
         When(request => request.DateTo != null, () =>
         {
           RuleFor(request => request.DateTo)
                 .NotEmpty()
-                .WithMessage("{PropertyName} is required")
-                .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))
-                .WithMessage("{PropertyName} must be today or grater");
+                .WithMessage("{PropertyName} is required");
         });
 
         When(request => request.PriceFromInNIS != null && request.PriceToInNIS != null, () =>

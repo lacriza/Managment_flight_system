@@ -1,4 +1,6 @@
 ﻿using ClientMVC.Models;
+using ClientMVC.Validators;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -20,7 +22,7 @@ namespace ClientMVC.Controllers
     {
       filters.PagingInfo = paging;
       var flightsPaging = await _restHelper.POST<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
-      return View(flightsPaging);
+      return View(flightsPaging.Data);
     }
 
     // GET: FlightsController/Add
@@ -35,12 +37,41 @@ namespace ClientMVC.Controllers
     {
       try
       {
-          var message = await _restHelper.POST<string, AddFlightViewModel>("/api/FLight/add-flight", flight);
+        AddFlightRequestValidatorcs validator = new AddFlightRequestValidatorcs();
+        ValidationResult results = validator.Validate(flight);
+        if (!results.IsValid)
+        {
+          foreach (var error in results.Errors)
+          {
+            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+          }
+          return View();
+        }
+        var message = await _restHelper.POST<string, AddFlightViewModel>("/api/FLight/add-flight", flight);
           return RedirectToAction(nameof(Index));
       }
       catch
       {
 
+        return View();
+      }
+    }
+
+    public ActionResult Edit(string flightNumber)
+    {
+      return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(FlightViewModel flightViewModel)
+    {
+      try
+      {
+        return RedirectToAction(nameof(Index));
+      }
+      catch
+      {
         return View();
       }
     }
