@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClientMVC.Models
 {
@@ -14,9 +15,15 @@ namespace ClientMVC.Models
 
     public string DepartureAirportIATA { get; set; }
 
+    [Required]
     public FlightType FlightType { get; set; }
 
     public decimal TotalPriceNIS { get; set; }
+
+    [Required]
+    [Range(1.0, 100000)]
+    public decimal BasePriceNIS { get; set; }
+
     public string[] Comments { get; set; }
   }
 }

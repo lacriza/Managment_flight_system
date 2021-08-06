@@ -25,6 +25,7 @@ namespace ClientMVC.Models
     public DateTime? DateTo { get; set; }
 
     public string PriceRange { get; set; }
+
     /// <summary>
     /// Search Flight with price starting from this PriceFromInNIS
     /// </summary>
@@ -49,6 +50,7 @@ namespace ClientMVC.Models
     /// Store info for pagination
     /// </summary>
     private PagingRequest _pagingInfo;
+
     public PagingRequest PagingInfo
     {
       get => (_pagingInfo ?? new PagingRequest());

@@ -5,7 +5,6 @@ namespace ClientMVC.Models
 {
   public class AddFlightViewModel
   {
-
     /// <summary>
     /// Date and time of outbound flight.
     /// </summary>
@@ -26,7 +25,6 @@ namespace ClientMVC.Models
     [Required]
     [StringLength(3)]
     public string ArrivalAirportIATA { get; set; }
-
 
     /// <summary>
     /// Departure point (example: TLV).

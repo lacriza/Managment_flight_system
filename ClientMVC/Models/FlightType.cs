@@ -2,7 +2,6 @@
 
 namespace ClientMVC.Models
 {
-
   [JsonConverter(typeof(JsonStringEnumConverter))]
   public enum FlightType
   {

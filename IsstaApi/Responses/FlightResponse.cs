@@ -19,6 +19,8 @@ namespace IsstaApi.Models
 
     public decimal TotalPriceNIS { get; set; }
 
+    public decimal BasePriceNIS { get; set; }
+
     public string[] Comments => FlightType switch
     {
       FlightType.Regular => new string[2] { CommentsConstants.SeatsIncluded, CommentsConstants.ApprovedFlight },

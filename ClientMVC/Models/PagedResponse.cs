@@ -2,7 +2,7 @@
 
 namespace ClientMVC.Models
 {
-  public class PagedResponse<T> 
+  public class PagedResponse<T>
   {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

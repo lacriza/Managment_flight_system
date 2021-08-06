@@ -5,10 +5,11 @@ namespace ClientMVC
 {
   public static class FiltersRequestMapper
   {
-    public static FiltersRequest PriceRangeMap(this FiltersRequest request) 
+    public static FiltersRequest PriceRangeMap(this FiltersRequest request)
     {
       if (!string.IsNullOrEmpty(request.PriceRange))
-      { var priceRangeArr = request.PriceRange.Split('-');
+      {
+        var priceRangeArr = request.PriceRange.Split('-');
         if (priceRangeArr.Length > 0)
         {
           request.PriceFromInNIS = Convert.ToDecimal(priceRangeArr[0]);
@@ -16,7 +17,7 @@ namespace ClientMVC
         }
       }
 
-      return request; 
+      return request;
     }
   }
 }

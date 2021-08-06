@@ -11,7 +11,8 @@
           <h6 class="card-subtitle text-muted">@Model.FlightType</h6>
           <!-- Button -->
           <div class="mt-2 text-md-start">
-            <a class="btn btn-navy shadow lift me-1" asp-area="" asp-controller="Flights" asp-action="Edit">Edit flight</a>
+            @{var id = Model.FlightNumber;}
+            @Html.Action("Edit", new { id = id })
           </div>
         </div>
         <div class="col-12 col-md-4 col-lg-4 align-self-center order-3 order-lg-2">
@@ -33,3 +34,21 @@
     </div>
   </div>
 </div>
+
+@section scripts
+{
+  <script type="text/javascript">
+
+    $(function () {
+      $.ajaxSetup({ cache: false });
+      $(".compItem").click(function (e) {
+
+        e.preventDefault();
+        $.get(this.href, function (data) {
+          $('#dialogContent').html(data);
+          $('#modDialog').modal('show');
+        });
+      });
+    })
+  </script>
+}
