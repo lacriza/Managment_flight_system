@@ -19,7 +19,7 @@ namespace ClientMVC.Controllers
 
     public async Task<IActionResult> Dropdown(string fieildForName)
     {
-      var airports = await _restHelper.GetIList<AirportModel>("/api/Airport/all");
+      var airports = await _restHelper.GET<AirportModel>("/api/Airport/all");
       var codes = airports.Select(s => new SelectListItem { Value = s.Code, Text = $"[{s.Code}] {s.Name}" });
       var model = new AirportViewModel
       {

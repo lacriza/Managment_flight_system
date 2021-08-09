@@ -59,9 +59,9 @@
           {
             <li class="page-item">
               @Html.ActionLink("Previous", "Index", "Flights",
-               new PagingRequest()
+               new
                {
-                 PageNumber = @i - 1,
+                 page = Model.PageNumber - 1,
                },
                new { @class = "page-link" })
             </li>
@@ -71,9 +71,9 @@
           {
             <li class="page-item active ">
               @Html.ActionLink(@i.ToString(), "Index", "Flights",
-                new PagingRequest()
+                new 
                 {
-                  PageNumber = @i,
+                  page = @i,
                 },
                 new { @class = "page-link" })
             </li>
@@ -82,9 +82,9 @@
           {
             <li class="page-item ">
               @Html.ActionLink(@i.ToString(), "Index", "Flights",
-                new PagingRequest()
+                new
                 {
-                  PageNumber = @i,
+                  page = @i,
                 },
                 new { @class = "page-link" })
             </li>
@@ -94,9 +94,9 @@
           {
             <li class="page-item">
               @Html.ActionLink("Next", "Index", "Flights",
-               new PagingRequest()
+               new 
                {
-                 PageNumber = @i + 1,
+                 page = Model.PageNumber + 1,
                },
                new { @class = "page-link" })
             </li>

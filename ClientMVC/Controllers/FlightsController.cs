@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,12 +19,15 @@ namespace ClientMVC.Controllers
     {
       _restHelper = new RESTHelper(logger, configuration);
     }
-
-    public async Task<ActionResult> Index()
+    
+    public async Task<ActionResult> Index(int? page = null)
     {
       var filters = new FiltersRequest()
       {
         PagingInfo = new PagingRequest()
+        {
+          PageNumber = (page == null) ? 1 : page.Value
+        } 
       };
       var flightsPaging = await _restHelper.POST<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
       return View(flightsPaging.Data);
@@ -71,7 +75,7 @@ namespace ClientMVC.Controllers
 
     public async Task<ActionResult> EditAsync(string id)
     {
-      var all = await _restHelper.GetIList<FlightViewModel>("/api/FLight/all");
+      var all = await _restHelper.GET<FlightViewModel>("/api/FLight/all");
       var flightForEdit = all.FirstOrDefault(f => f.FlightNumber == id);
       return PartialView("Edit", flightForEdit);
     }
@@ -82,12 +86,12 @@ namespace ClientMVC.Controllers
     {
       try
       {
-        var flight = await _restHelper.PUT<FlightViewModel, FlightViewModel>("/api/FLight/update-flight", flightViewModel);
+        var response = await _restHelper.PUT<FlightViewModel, FlightViewModel>("/api/FLight/update-flight", flightViewModel);
         return RedirectToAction(nameof(Index));
       }
-      catch
+      catch (Exception e)
       {
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Error));
       }
     }
 

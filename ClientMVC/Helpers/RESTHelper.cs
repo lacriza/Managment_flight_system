@@ -24,8 +24,7 @@ namespace ClientMVC
       _apiBaseUrl = _configuration.GetValue<string>("WebAPIBaseUrl");
     }
 
-    //HTTP GET
-    public async Task<IList<TResultModel>> GetIList<TResultModel>(string endpoint)
+    public async Task<IList<TResultModel>> GET<TResultModel>(string endpoint)
     {
       using (var client = new HttpClient())
       {
@@ -37,7 +36,7 @@ namespace ClientMVC
           var readTask = await result.Content.ReadAsAsync<IList<TResultModel>>();
           return readTask;
         }
-        else //web api sent error response
+        else
         {
           _logger.LogError("Server error during GET request");
           return (IList<TResultModel>)Enumerable.Empty<TResultModel>();
@@ -47,7 +46,6 @@ namespace ClientMVC
 
     public async Task<Response<TResultModel>> POST<TResultModel, TRequest>(string endpoint, TRequest request)
     {
-      var response = new Response<TResultModel>();
       using (var client = new HttpClient())
       {
         var serilizedContent = JsonConvert.SerializeObject(request);
@@ -55,24 +53,12 @@ namespace ClientMVC
         client.BaseAddress = new Uri(_apiBaseUrl);
 
         var result = await client.PostAsync(endpoint, content);
-        response.IsSuccessfull = result.IsSuccessStatusCode;
-        if (result.IsSuccessStatusCode)
-        {
-          var readTask = await result.Content.ReadAsAsync<TResultModel>();
-          response.Data = readTask;
-          return response;
-        }
-        else
-        {
-          _logger.LogError("Smg Bad happend");
-          return response;
-        }
+        return await CreateResponse<TResultModel>(result);
       }
     }
 
     public async Task<Response<TResultModel>> PUT<TResultModel, TRequest>(string endpoint, TRequest request)
     {
-      var response = new Response<TResultModel>();
       using (var client = new HttpClient())
       {
         var serilizedContent = JsonConvert.SerializeObject(request);
@@ -80,18 +66,30 @@ namespace ClientMVC
         client.BaseAddress = new Uri(_apiBaseUrl);
 
         var result = await client.PutAsync(endpoint, content);
-        response.IsSuccessfull = result.IsSuccessStatusCode;
-        if (result.IsSuccessStatusCode)
+        return await CreateResponse<TResultModel>(result);
+      }
+    }
+
+    private async Task<Response<TResultModel>> CreateResponse<TResultModel>(HttpResponseMessage result)
+    {
+      var response = new Response<TResultModel>();
+      response.IsSuccessfull = result.IsSuccessStatusCode;
+      if (result.IsSuccessStatusCode)
+      {
+        var readTask = await result.Content.ReadAsAsync<TResultModel>();
+        response.Data = readTask;
+        return response;
+      }
+      else
+      {
+        var errors = await result.Content.ReadAsAsync<Dictionary<string, string>>();
+        
+        foreach (var error in errors)
         {
-          var readTask = await result.Content.ReadAsAsync<TResultModel>();
-          response.Data = readTask;
-          return response;
+           _logger.LogError(error.Value);
         }
-        else
-        {
-          _logger.LogError("Smg Bad happend");
-          return response;
-        }
+        response.Error = errors;
+        return response;
       }
     }
   }

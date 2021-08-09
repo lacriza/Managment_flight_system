@@ -35,6 +35,11 @@ namespace ClientMVC.Validators
                .WithMessage("{PropertyName} is required")
                .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))
                .WithMessage("{PropertyName} must be today or grater");
+
+      RuleFor(request => request.BasePriceNIS)
+         .NotEmpty()
+         .GreaterThan(0)
+         .WithMessage("{PropertyName} is required");
     }
   }
 }

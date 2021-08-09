@@ -42,7 +42,6 @@ namespace Web.Controllers
     {
       var flights = await _flightService.ListAsync();
       var resources = _mapper.Map<IEnumerable<Flight>, IEnumerable<FlightResponse>>(flights);
-
       return Ok(resources);
     }
 
@@ -64,7 +63,6 @@ namespace Web.Controllers
       {
         var filters = _mapper.Map<FiltersRequest, Filters>(request);
         var flights = await _flightService.ListAsync(filters);
-
         return Ok(flights);
       }
 
@@ -84,8 +82,8 @@ namespace Web.Controllers
     {
       AddFlightRequestValidator validator = new AddFlightRequestValidator();
       ValidationResult results = validator.Validate(request);
-
       var validate = IsOK(results);
+
       if (validate.Item1)
       {
         var flight = _mapper.Map<AddFlightRequest, Flight>(request);
@@ -107,33 +105,31 @@ namespace Web.Controllers
     {
       UpdateFlightRequestValidator validator = new UpdateFlightRequestValidator();
       ValidationResult results = validator.Validate(request);
-
-
       var validate = IsOK(results);
+
       if (validate.Item1) 
       {
         var flight = _mapper.Map<UpdateFlightRequest, Flight>(request);
         await _flightService.UpdateAsync(flight);
-
-        return Ok($"Flight with flight number {request.FlightNumber} updated ");
+        return Ok(flight);
       }
 
       return BadRequest(validate.Item2);
     }
 
 
-    private (bool, string) IsOK(ValidationResult results) 
+    private (bool, Dictionary<string, string>) IsOK(ValidationResult results) 
     {
       if (!results.IsValid)
       {
-        string errors = string.Empty;
+        var errors = new Dictionary<string, string>();
         foreach (var failure in results.Errors)
         {
-          errors += failure.ErrorMessage;
+          errors.Add(failure.PropertyName, failure.ErrorMessage);
         }
         return (false, errors);
       }
-      return (true, string.Empty);
+      return (true, null);
     }
 
   }
