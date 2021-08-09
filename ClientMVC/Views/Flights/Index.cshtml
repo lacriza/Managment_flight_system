@@ -50,60 +50,19 @@
         }
       }
 
-      <!-- Pagination -->
-      <ul class="pagination float-right">
-        @for (int i = 1; i < Model?.TotalPages; i++)
+      @if (Model?.TotalPages > 1)
+      {
+        @await Html.PartialAsync("~/Views/Shared/_PartialPagination.cshtml", new PaginationViewModel()
         {
+          NextPage = Model.NextPage,
+          PreviousPage = Model.PreviousPage,
+          PageSize = Model.PageSize,
+          TotalPages = Model.TotalPages,
+          TotalRecords = Model.TotalRecords,
+          PageNumber = Model.PageNumber
+        })
+      }
 
-          @if (i == 1 && Model.PreviousPage)
-          {
-            <li class="page-item">
-              @Html.ActionLink("Previous", "Index", "Flights",
-               new
-               {
-                 page = Model.PageNumber - 1,
-               },
-               new { @class = "page-link" })
-            </li>
-          }
-
-          if (Model.PageNumber == i)
-          {
-            <li class="page-item active ">
-              @Html.ActionLink(@i.ToString(), "Index", "Flights",
-                new 
-                {
-                  page = @i,
-                },
-                new { @class = "page-link" })
-            </li>
-          }
-          else
-          {
-            <li class="page-item ">
-              @Html.ActionLink(@i.ToString(), "Index", "Flights",
-                new
-                {
-                  page = @i,
-                },
-                new { @class = "page-link" })
-            </li>
-          }
-
-          @if (i == Model.TotalPages - 1 && Model.NextPage)
-          {
-            <li class="page-item">
-              @Html.ActionLink("Next", "Index", "Flights",
-               new 
-               {
-                 page = Model.PageNumber + 1,
-               },
-               new { @class = "page-link" })
-            </li>
-          }
-        }
-      </ul>
-      <!-- / Pagination -->
     </div>
   </div>
   <div class="col-11 col-md-2 col-lg-2 order-1 order-lg-2 ml-3">

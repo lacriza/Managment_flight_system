@@ -22,15 +22,22 @@ namespace ClientMVC.Controllers
     
     public async Task<ActionResult> Index(int? page = null)
     {
-      var filters = new FiltersRequest()
+      try
       {
-        PagingInfo = new PagingRequest()
+        var filters = new FiltersRequest()
         {
-          PageNumber = (page == null) ? 1 : page.Value
-        } 
-      };
-      var flightsPaging = await _restHelper.POST<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
-      return View(flightsPaging.Data);
+          PagingInfo = new PagingRequest()
+          {
+            PageNumber = (page == null) ? 1 : page.Value
+          }
+        };
+        var flightsPaging = await _restHelper.POST<PagedResponse<FlightViewModel>, FiltersRequest>("/api/FLight/by-filter-and-page", filters);
+        return View(flightsPaging.Data);
+      }
+      catch (Exception e)
+      {
+        return RedirectToAction(nameof(Error), e.Message);
+      }
     }
 
     [ValidateAntiForgeryToken]
