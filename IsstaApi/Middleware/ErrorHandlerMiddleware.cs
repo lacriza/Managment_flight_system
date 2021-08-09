@@ -44,7 +44,9 @@ namespace Web.Middleware
             break;
         }
 
-        var result = JsonSerializer.Serialize(new { message = error?.Message });
+        var errors = new Dictionary<string, string>();
+        errors.Add(error.ToString(), error?.Message);
+        var result = JsonSerializer.Serialize(errors);
         await response.WriteAsync(result);
       }
     }

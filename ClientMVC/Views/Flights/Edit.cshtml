@@ -5,6 +5,10 @@
   string buttonId = $"#modal{id}";
   string modalId = $"modal{id}";
 }
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 <button type="button" class="btn btn-navy shadow lift" data-toggle="modal" data-target=@buttonId>
   Edit Flight
 </button>
@@ -12,7 +16,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Flight Details <span class="badge bg-secondary">@Model?.FlightNumber</span></h5>
+        <h3 class="modal-title" id="exampleModalLabel">Update Flight Details <span class="badge bg-info">@Model?.FlightNumber</span></h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -21,8 +25,9 @@
       <form asp-action="Edit" class="column">
         <div class="modal-body">
           @Html.HiddenFor(model => model.FlightNumber)
-          Departure:  <span class="badge btn-navy">@Model?.DepartureAirportIATA</span><br>
-          Arrival: <span class="badge btn-navy">@Model?.ArrivalAirportIATA</span><hr>
+          <h5>Departure:  <span class="badge btn-navy">@Model?.DepartureAirportIATA</span></h5>
+          <h5>Arrival: <span class="badge btn-navy">@Model?.ArrivalAirportIATA</span></h5>
+          <hr>
 
           <div class="form-group">
             @Html.LabelFor(model => model.DepartureDateTime, "Departure Date Time:", new { @class = "form-check-label" })
@@ -58,6 +63,9 @@
             @Html.ValidationMessageFor(m => m.FlightType, "", new { @class = "text-error" })
           </div>
         </div>
+        @section Scripts {
+          @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-navy">Save changes</button>

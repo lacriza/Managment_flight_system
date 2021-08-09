@@ -7,9 +7,13 @@ namespace ClientMVC.Models
   {
     public string FlightNumber { get; set; }
 
-    public DateTimeOffset DepartureDateTime { get; set; }
+    [Required]
+    [DataType(DataType.DateTime)]
+    public DateTime DepartureDateTime { get; set; }
 
-    public DateTimeOffset ArrivalDateTime { get; set; }
+    [Required]
+    [DataType(DataType.DateTime)]
+    public DateTime ArrivalDateTime { get; set; }
 
     public string ArrivalAirportIATA { get; set; }
 
@@ -21,7 +25,7 @@ namespace ClientMVC.Models
     public decimal TotalPriceNIS { get; set; }
 
     [Required]
-    [Range(1.0, 100000)]
+    [Range(1, double.MaxValue, ErrorMessage = "Please enter a value bigger than 1")]
     public decimal BasePriceNIS { get; set; }
 
     public string[] Comments { get; set; }

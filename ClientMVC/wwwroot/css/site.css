@@ -35,6 +35,10 @@
   border-color: #3f3d56;
 }
 
+.bg-info {
+  background-color: #0DCAF0 !important;
+}
+
 input[type='radio']:after {
   width: 16px;
   height: 16px;

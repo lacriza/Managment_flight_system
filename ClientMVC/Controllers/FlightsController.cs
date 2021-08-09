@@ -67,9 +67,9 @@ namespace ClientMVC.Controllers
         var message = await _restHelper.POST<string, AddFlightViewModel>("/api/FLight/add-flight", flight);
         return RedirectToAction(nameof(Index));
       }
-      catch
+      catch (Exception e)
       {
-        return View();
+        return RedirectToAction(nameof(Error), e.Message);
       }
     }
 
@@ -86,19 +86,27 @@ namespace ClientMVC.Controllers
     {
       try
       {
-        var response = await _restHelper.PUT<FlightViewModel, FlightViewModel>("/api/FLight/update-flight", flightViewModel);
-        return RedirectToAction(nameof(Index));
+        if (!ModelState.IsValid) 
+        {
+          return PartialView("Edit", flightViewModel);
+        }
+          var response = await _restHelper.PUT<FlightViewModel, FlightViewModel>("/api/FLight/update-flight", flightViewModel);
+          return RedirectToAction(nameof(Index));
       }
       catch (Exception e)
       {
-        return RedirectToAction(nameof(Error));
+        return RedirectToAction(nameof(Error), e.Message);
       }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(string message)
     {
-      return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+      return View(new ErrorViewModel 
+      { 
+        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+        Message = message
+      });
     }
   }
 }
