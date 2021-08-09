@@ -3,23 +3,26 @@
   ViewData["Title"] = "Error";
 }
 
-<h1 class="text-error">Error.</h1>
-<h2 class="text-error">An error occurred while processing your request.</h2>
+<div class="container">
+  <h1 class="text-error">Error.</h1>
+  <h2 class="text-error">An error occurred while processing your request.</h2>
 
-@if (Model.ShowRequestId)
-{
-  <p>
-    <strong>Request ID:</strong> <code>@Model.RequestId</code>
-  </p>
-}
+  @if (Model.ShowRequestId)
+  {
+    <p>
+      <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+  }
 
-<h2>@Model.Message</h2>
+  <h2>@Model.Message</h2>
 
-<div class="row">
-  <img src="@Url.Content("~/Content/Images/undraw_blank_canvas_3rbb.svg")"
-       class=" col-5 img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate"
-       alt="..."
-       data-aos="fade-up"
-       data-aos-delay="100">
+  <div class="row">
+    <img src="@Url.Content("~/Content/Images/undraw_blank_canvas_3rbb.svg")"
+         class=" col-5 img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate"
+         alt="..."
+         data-aos="fade-up"
+         data-aos-delay="100">
+  </div>
 </div>
+
 

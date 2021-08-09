@@ -1,0 +1,26 @@
+﻿@{
+  ViewData["Title"] = "CustomError";
+  var exception = ViewData["Exception"] as Exception;
+  var action = ViewData["ActionName"] as string;
+}
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6">
+      <h1 class="text-error">Error in</h1><span> @action</span>.
+      <h2 class="text-error">@exception.Message</h2>
+    </div>
+
+    <img src="@Url.Content("~/Content/Images/undraw_blank_canvas_3rbb.svg")"
+         class=" col-5 img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate"
+         alt="..."
+         data-aos="fade-up"
+         data-aos-delay="100">
+  </div>
+  <div class="row">
+
+    <h3>Stack Trace:</h3>
+    <p>@exception.StackTrace</p>
+  </div>
+</div>

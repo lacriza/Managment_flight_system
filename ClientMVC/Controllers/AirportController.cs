@@ -1,4 +1,5 @@
-﻿using ClientMVC.Models;
+﻿using ClientMVC.Filters;
+using ClientMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClientMVC.Controllers
 {
+  [TypeFilter(typeof(CustomExceptionFilter))]
   public class AirportController : Controller
   {
     private readonly RESTHelper _restHelper;
