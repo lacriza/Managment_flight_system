@@ -3,6 +3,7 @@ using Core.POCO;
 using Infrastructure.Models;
 using IsstaApi.Models;
 using Web.Requests;
+using Flight = Infrastructure.Models.Flight;
 
 namespace Web.MapperProfile
 {
@@ -10,12 +11,12 @@ namespace Web.MapperProfile
   {
     public MapperProfile()
     {
-      CreateMap<Flight, FlightResponse>();
       CreateMap<Airport, AirportResponse>();
       CreateMap<AddFlightRequest, Flight>();
       CreateMap<UpdateFlightRequest, Flight>();
       CreateMap<PagingRequest, PagingInfo>();
       CreateMap<FiltersRequest, Filters>();
+      CreateMap<Flight, Core.POCO.Flight>();
     }
   }
 }

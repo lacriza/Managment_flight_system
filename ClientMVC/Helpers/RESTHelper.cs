@@ -76,6 +76,7 @@ namespace ClientMVC
       response.IsSuccessfull = result.IsSuccessStatusCode;
       if (result.IsSuccessStatusCode)
       {
+        var readTask2 = await result.Content.ReadAsStringAsync();
         var readTask = await result.Content.ReadAsAsync<TResultModel>();
         response.Data = readTask;
         return response;

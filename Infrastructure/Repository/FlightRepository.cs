@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Flight = Core.POCO.Flight;
 
 namespace Infrastructure.Repository
 {
@@ -33,7 +34,6 @@ namespace Infrastructure.Repository
           flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
           flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
           flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
-          flight.TotalPriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
           flight.ArrivalDateTime = (DateTimeOffset) rdr["arrivalDateTime"];
           flight.DepartureDateTime = (DateTimeOffset) rdr["departureDateTime"];
           flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
@@ -65,7 +65,7 @@ namespace Infrastructure.Repository
       using (var connection = GetOpenConnection())
       {
         SqlCommand command = new SqlCommand(
-          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @totalPrice)", connection);
+          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice)", connection);
 
         command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
         command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
@@ -74,8 +74,6 @@ namespace Infrastructure.Repository
         command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
         command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
         command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
-        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
-
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
       }
@@ -99,7 +97,6 @@ namespace Infrastructure.Repository
           flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
           flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
           flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
-          flight.BasePriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
           flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
           flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
           flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
@@ -108,7 +105,7 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<Flight> Update(Flight flight)
+    public async Task<Flight> Update(Core.POCO.Flight flight)
     {
       using (var connection = GetOpenConnection())
       {
@@ -117,8 +114,7 @@ namespace Infrastructure.Repository
           "departureDateTime = @depDate, " +
           "arrivalDateTime = @arrDate,  " +
           "flightType = @type, " +
-          "basePriceNIS = @basePrice, " +
-          "totalPriceNIS = @totalPrice " +
+          "basePriceNIS = @basePrice " +
           "WHERE flightNumber = @flightNo", connection);
 
         command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
@@ -126,7 +122,6 @@ namespace Infrastructure.Repository
         command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
         command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
         command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
-        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
 
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
@@ -150,7 +145,6 @@ namespace Infrastructure.Repository
           flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
           flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
           flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
-          flight.TotalPriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
           flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
           flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
           flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
@@ -183,12 +177,12 @@ namespace Infrastructure.Repository
 
       if (filters.PriceFromInNIS != null)
       {
-        filter += "[totalPriceNIS] >= @PriceFrom AND ";
+        filter += "[basePriceNIS] >= @PriceFrom AND ";
       }
 
       if (filters.PriceToInNIS != null)
       {
-        filter += "[totalPriceNIS] <=  @PriceTo AND ";
+        filter += "[basePriceNIS] <=  @PriceTo AND ";
       }
 
       if (!string.IsNullOrEmpty(filters.ToAirportIATACode))

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Core.POCO;
+using System;
 
-namespace Core.POCO
+namespace Infrastructure.Models
 {
-  public class Flight
+  public class FlightResponse
   {
     public string FlightNumber { get; set; }
     public DateTimeOffset DepartureDateTime { get; set; }
@@ -15,9 +16,9 @@ namespace Core.POCO
 
     public FlightType FlightType { get; set; }
 
-    public decimal BasePriceNIS { get; set; }
+    public decimal TotalPriceNIS { get; set; }
 
-    //public decimal TotalPriceNIS { get; set; }
+    public decimal BasePriceNIS { get; set; }
 
     public string[] Comments { get; set; }
   }

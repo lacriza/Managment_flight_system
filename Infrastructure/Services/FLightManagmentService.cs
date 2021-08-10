@@ -1,10 +1,13 @@
-﻿using Core.POCO;
+﻿using AutoMapper;
+using Core.POCO;
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Flight = Infrastructure.Models.Flight;
 
 namespace Infrastructure.Services
 {
@@ -13,43 +16,54 @@ namespace Infrastructure.Services
     private readonly IFlightRepository _flightRepository;
     private readonly IAirportRepository _airportRepository;
     private readonly IRepository<Comment> _commentsRepository;
+    private readonly PriceOptions _options;
+    private readonly IMapper _mapper;
 
     public FLightManagmentService(
       IFlightRepository flightRepository,
       IAirportRepository airportRepository,
-      IRepository<Comment> commentsRepository)
+      IRepository<Comment> commentsRepository,
+      IOptions<PriceOptions> options, IMapper mapper)
     {
+      _options = options.Value;
       _flightRepository = flightRepository;
       _airportRepository = airportRepository;
       _commentsRepository = commentsRepository;
+      _mapper = mapper;
     }
 
     public async Task<IEnumerable<Flight>> ListAsync()
     {
+      var list = new List<Flight>();
       var flights = await _flightRepository.GetAll();
-      var comments = await _commentsRepository.GetAll();
+      var commentsList = await _commentsRepository.GetAll();
       foreach (var flight in flights)
       {
-        flight.Comments = comments.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+        var comments = commentsList.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+        Flight mappedflight = MapType(flight.FlightType, flight, comments);
+        list.Add(mappedflight);
       }
-      return flights;
+      return list;
     }
 
     public async Task<PagedResponse<List<Flight>>> ListAsync(Filters filters)
     {
       await ValidateAirportsCodesAsync(filters.ToAirportIATACode);
       await ValidateAirportsCodesAsync(filters.FromAirportIATACode);
-
-      var list = await _flightRepository.GetFiltredPagedFlightsAsync(filters);
-      var comments = await _commentsRepository.GetAll();
-      foreach (var flight in list.Item1)
+      var list = new List<Flight>();
+      var flights = await _flightRepository.GetFiltredPagedFlightsAsync(filters);
+      var commentsList = await _commentsRepository.GetAll();
+      foreach (var flight in flights.Item1)
       {
-        flight.Comments = comments.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+        var comments = commentsList.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+        Flight mappedflight = MapType(flight.FlightType, flight, comments);
+        list.Add(mappedflight);
       }
-      var totalRecords = list.Item2;
-      var pagedList = list.Item1.ToList().CreatePagedReponse(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
+      var totalRecords = flights.Item2;
+      var pagedList = list.CreatePagedReponse(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
       return pagedList;
     }
+
 
     public async Task<string> AddAsync(Flight flight)
     {
@@ -57,9 +71,11 @@ namespace Infrastructure.Services
       await ValidateAirportsCodesAsync(flight.ArrivalAirportIATA);
 
       flight.FlightNumber = FlightNumberGenerator.Generate(flight.DepartureAirportIATA, flight.ArrivalAirportIATA);
-      flight.TotalPriceNIS = flight.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
+      var pocoFlight = _mapper.Map<Flight, Core.POCO.Flight>(flight);
+      Flight flightBLL = MapType(flight.FlightType, pocoFlight, null);
 
-      await _flightRepository.Insert(flight);
+      var resourse = _mapper.Map<Flight, Core.POCO.Flight>(flightBLL);
+      await _flightRepository.Insert(resourse);
       return flight.FlightNumber;
     }
 
@@ -99,8 +115,41 @@ namespace Infrastructure.Services
         flightForUpdating.BasePriceNIS = flight.BasePriceNIS;
       }
 
-      flight.TotalPriceNIS = flightForUpdating.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
-      return await _flightRepository.Update(flight);
+      var result = await _flightRepository.Update(flightForUpdating);
+      return flight;
+    }
+
+    private Flight MapType(FlightType type, Core.POCO.Flight flight, string[] comments)
+    {
+      return type switch
+      {
+        FlightType.Regular =>
+        new RegularFlight(flight.FlightNumber,
+                          flight.DepartureDateTime,
+                          flight.ArrivalDateTime,
+                          flight.ArrivalAirportIATA,
+                          flight.DepartureAirportIATA,
+                          flight.BasePriceNIS,
+                          comments,
+                          _options),
+        FlightType.LowCost => new LowCostFlight(flight.FlightNumber,
+                          flight.DepartureDateTime,
+                          flight.ArrivalDateTime,
+                          flight.ArrivalAirportIATA,
+                          flight.DepartureAirportIATA,
+                          flight.BasePriceNIS,
+                          comments,
+                          _options),
+        FlightType.Charter => new CharterFlight(flight.FlightNumber,
+                          flight.DepartureDateTime,
+                          flight.ArrivalDateTime,
+                          flight.ArrivalAirportIATA,
+                          flight.DepartureAirportIATA,
+                          flight.BasePriceNIS,
+                          comments,
+                          _options),
+        _ => new RegularFlight(),
+      };
     }
   }
 }

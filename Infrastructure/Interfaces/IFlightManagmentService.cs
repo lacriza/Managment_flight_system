@@ -1,7 +1,7 @@
-﻿using Core.POCO;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Flight = Infrastructure.Models.Flight;
 
 namespace Infrastructure.Interfaces
 {

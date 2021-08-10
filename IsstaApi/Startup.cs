@@ -1,6 +1,8 @@
 using AutoMapper;
+using Core;
 using Core.POCO;
 using Infrastructure.Interfaces;
+using Infrastructure.Models;
 using Infrastructure.Repository;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
