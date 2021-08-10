@@ -1,4 +1,5 @@
 using AutoMapper;
+using Core.POCO;
 using Infrastructure.Interfaces;
 using Infrastructure.Repository;
 using Infrastructure.Services;
@@ -44,6 +45,7 @@ namespace IsstaApi
       services.AddSingleton(_ => Configuration);
       services.AddScoped<IFlightRepository, FlightRepository>();
       services.AddScoped<IAirportRepository, AirportRepository>();
+      services.AddScoped<IRepository<Comment>, CommentRepository>();
       services.AddScoped<IFlightManagmentService, FLightManagmentService>();
     }
 

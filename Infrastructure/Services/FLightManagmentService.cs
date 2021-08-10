@@ -12,16 +12,27 @@ namespace Infrastructure.Services
   {
     private readonly IFlightRepository _flightRepository;
     private readonly IAirportRepository _airportRepository;
+    private readonly IRepository<Comment> _commentsRepository;
 
-    public FLightManagmentService(IFlightRepository flightRepository, IAirportRepository airportRepository)
+    public FLightManagmentService(
+      IFlightRepository flightRepository,
+      IAirportRepository airportRepository,
+      IRepository<Comment> commentsRepository)
     {
       _flightRepository = flightRepository;
       _airportRepository = airportRepository;
+      _commentsRepository = commentsRepository;
     }
 
     public async Task<IEnumerable<Flight>> ListAsync()
     {
-        return await _flightRepository.GetAllFlightsAsync();
+      var flights = await _flightRepository.GetAll();
+      var comments = await _commentsRepository.GetAll();
+      foreach (var flight in flights)
+      {
+        flight.Comments = comments.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+      }
+      return flights;
     }
 
     public async Task<PagedResponse<List<Flight>>> ListAsync(Filters filters)
@@ -30,8 +41,13 @@ namespace Infrastructure.Services
       await ValidateAirportsCodesAsync(filters.FromAirportIATACode);
 
       var list = await _flightRepository.GetFiltredPagedFlightsAsync(filters);
+      var comments = await _commentsRepository.GetAll();
+      foreach (var flight in list.Item1)
+      {
+        flight.Comments = comments.Where(c => c.FlightType == flight.FlightType).Select(s => s.Text).ToArray();
+      }
       var totalRecords = list.Item2;
-      var pagedList = list.Item1.ToList().CreatePagedReponse<Flight>(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
+      var pagedList = list.Item1.ToList().CreatePagedReponse(filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize, totalRecords);
       return pagedList;
     }
 
@@ -43,11 +59,11 @@ namespace Infrastructure.Services
       flight.FlightNumber = FlightNumberGenerator.Generate(flight.DepartureAirportIATA, flight.ArrivalAirportIATA);
       flight.TotalPriceNIS = flight.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
 
-      await _flightRepository.AddFlightAsync(flight);
+      await _flightRepository.Insert(flight);
       return flight.FlightNumber;
     }
 
-    private async Task ValidateAirportsCodesAsync(string iata) 
+    private async Task ValidateAirportsCodesAsync(string iata)
     {
       if (!string.IsNullOrEmpty(iata))
       {
@@ -58,12 +74,12 @@ namespace Infrastructure.Services
 
     public async Task<Flight> UpdateAsync(Flight flight)
     {
-      var flightForUpdating = await _flightRepository.GetByIdAsync(flight.FlightNumber);
+      var flightForUpdating = await _flightRepository.GetById(flight.FlightNumber);
 
       if (flightForUpdating == null)
         throw new ArgumentException("This Flight Number does not exist in DB.");
 
-      if (flight.DepartureDateTime != default) 
+      if (flight.DepartureDateTime != default)
       {
         flightForUpdating.DepartureDateTime = flight.DepartureDateTime;
       }
@@ -80,11 +96,11 @@ namespace Infrastructure.Services
 
       if (flight.BasePriceNIS != default && flight.BasePriceNIS != flightForUpdating.BasePriceNIS)
       {
-        flightForUpdating.BasePriceNIS = flight.BasePriceNIS;       
+        flightForUpdating.BasePriceNIS = flight.BasePriceNIS;
       }
 
       flight.TotalPriceNIS = flightForUpdating.BasePriceNIS.CalculateTotalPrice(flight.FlightType);
-      return await _flightRepository.UpdateByIdAsync(flight);
+      return await _flightRepository.Update(flight);
     }
   }
 }

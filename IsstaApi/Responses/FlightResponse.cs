@@ -1,5 +1,4 @@
-﻿using Core;
-using IsstaApi.Enums;
+﻿using IsstaApi.Enums;
 using System;
 
 namespace IsstaApi.Models
@@ -21,12 +20,6 @@ namespace IsstaApi.Models
 
     public decimal BasePriceNIS { get; set; }
 
-    public string[] Comments => FlightType switch
-    {
-      FlightType.Regular => new string[2] { CommentsConstants.SeatsIncluded, CommentsConstants.ApprovedFlight },
-      FlightType.LowCost => new string[3] { CommentsConstants.FlightDoesNotIncludeLuggage, CommentsConstants.FlightDoesNotIncludeMeals, CommentsConstants.FullCancellationFee },
-      FlightType.Charter => new string[2] { CommentsConstants.DepartureTimeMayVary, CommentsConstants.SeatSelectionOnlyAtCheckIn },
-      _ => Array.Empty<string>(),
-    };
+    public string[] Comments { get; set; }
   }
 }
