@@ -32,7 +32,7 @@ namespace Web.Controllers
     [Route("all")]
     public async Task<IActionResult> Get()
     {
-      var airports = await _airportRepository.GetAllAirportsAsync();
+      var airports = await _airportRepository.GetAll();
       var resources = _mapper.Map<IEnumerable<Airport>, IEnumerable<AirportResponse>>(airports);
 
       return Ok(resources);
@@ -52,7 +52,7 @@ namespace Web.Controllers
         return BadRequest("Airport code must be 3 character long: ");
       }
 
-      var airport = await _airportRepository.GetAirportByIATACodeAsync(code);
+      var airport = await _airportRepository.GetById(code);
       var resources = _mapper.Map<Airport, AirportResponse>(airport);
 
       return Ok(resources);

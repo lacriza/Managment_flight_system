@@ -16,7 +16,7 @@ namespace Infrastructure.Repository
     {
     }
 
-    public async Task<IEnumerable<Flight>> GetAllFlightsAsync()
+    public async Task<IEnumerable<Flight>> GetAll()
     {
       List<Flight> flightList = new List<Flight>();
 
@@ -40,6 +40,97 @@ namespace Infrastructure.Repository
           flightList.Add(flight);
         }
         return flightList;
+      }
+    }
+
+    public async Task<int> TotalFlightsAsync()
+    {
+      using (var connection = GetOpenConnection())
+      {
+        int totalFlights = 0;
+        SqlCommand command = new SqlCommand(
+          "SELECT COUNT(*) as total FROM Flight", connection);
+
+        SqlDataReader rdr = command.ExecuteReader();
+        while (await rdr.ReadAsync())
+        {
+           totalFlights = Convert.ToInt32(rdr["total"]);
+        }
+        return totalFlights;
+      }
+    }
+
+    public async Task Insert(Flight flight)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @totalPrice)", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
+        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
+        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
+        command.Parameters.Add(new SqlParameter("@depIATA", flight.DepartureAirportIATA));
+        command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
+        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
+        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
+
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
+      }
+    }
+
+    public async Task<Flight> GetById(string flightId)
+    {
+      Flight flight = new Flight();
+
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "SELECT * FROM Flight WHERE flightNumber = @flightNo", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flightId));
+        
+        SqlDataReader rdr = command.ExecuteReader();
+        while (await rdr.ReadAsync())
+        {
+          flight.FlightNumber = rdr["flightNumber"].ToString();
+          flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
+          flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
+          flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
+          flight.BasePriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
+          flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
+          flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
+          flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
+        }
+        return flight;
+      }
+    }
+
+    public async Task<Flight> Update(Flight flight)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "UPDATE Flight SET " +
+          "departureDateTime = @depDate, " +
+          "arrivalDateTime = @arrDate,  " +
+          "flightType = @type, " +
+          "basePriceNIS = @basePrice, " +
+          "totalPriceNIS = @totalPrice " +
+          "WHERE flightNumber = @flightNo", connection);
+
+        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
+        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
+        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
+        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
+        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
+
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
+        return flight;
       }
     }
 
@@ -67,99 +158,6 @@ namespace Infrastructure.Repository
           flightList.Add(flight);
         }
         return (flightList, total);
-      }
-    }
-
-    public async Task<int> TotalFlightsAsync()
-    {
-      using (var connection = GetOpenConnection())
-      {
-        int totalFlights = 0;
-        SqlCommand command = new SqlCommand(
-          "SELECT COUNT(*) as total FROM Flight", connection);
-
-        SqlDataReader rdr = command.ExecuteReader();
-        while (await rdr.ReadAsync())
-        {
-           totalFlights = Convert.ToInt32(rdr["total"]);
-        }
-        return totalFlights;
-      }
-    }
-
-    public async Task AddFlightAsync(Flight flight)
-    {
-      using (var connection = GetOpenConnection())
-      {
-        SqlCommand command = new SqlCommand(
-          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @totalPrice)", connection);
-
-        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
-        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
-        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
-        command.Parameters.Add(new SqlParameter("@depIATA", flight.DepartureAirportIATA));
-        command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
-        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
-        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
-        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
-
-        command.CommandType = CommandType.Text;
-        await command.ExecuteNonQueryAsync();
-      }
-    }
-
- 
-
-    public async Task<Flight> GetByIdAsync(string flightId)
-    {
-      Flight flight = new Flight();
-
-      using (var connection = GetOpenConnection())
-      {
-        SqlCommand command = new SqlCommand(
-          "SELECT * FROM Flight WHERE flightNumber = @flightNo", connection);
-
-        command.Parameters.Add(new SqlParameter("@flightNo", flightId));
-        
-        SqlDataReader rdr = command.ExecuteReader();
-        while (await rdr.ReadAsync())
-        {
-          flight.FlightNumber = rdr["flightNumber"].ToString();
-          flight.ArrivalAirportIATA = rdr["arrivalAirport"].ToString();
-          flight.DepartureAirportIATA = rdr["departureAirport"].ToString();
-          flight.BasePriceNIS = Convert.ToDecimal(rdr["basePriceNIS"]);
-          flight.BasePriceNIS = Convert.ToDecimal(rdr["totalPriceNIS"]);
-          flight.ArrivalDateTime = (DateTimeOffset)rdr["arrivalDateTime"];
-          flight.DepartureDateTime = (DateTimeOffset)rdr["departureDateTime"];
-          flight.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
-        }
-        return flight;
-      }
-    }
-
-    public async Task<Flight> UpdateByIdAsync(Flight flight)
-    {
-      using (var connection = GetOpenConnection())
-      {
-        SqlCommand command = new SqlCommand(
-          "UPDATE Flight SET " +
-          "departureDateTime = @depDate, " +
-          "arrivalDateTime = @arrDate,  " +
-          "flightType = @type, " +
-          "basePriceNIS = @basePrice, " +
-          "totalPriceNIS = @totalPrice " +
-          "WHERE flightNumber = @flightNo", connection);
-
-        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
-        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
-        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
-        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
-        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
-        command.Parameters.Add(new SqlParameter("@totalPrice", flight.TotalPriceNIS));
-
-        command.CommandType = CommandType.Text;
-        await command.ExecuteNonQueryAsync();
-        return flight;
       }
     }
 
@@ -267,5 +265,6 @@ namespace Infrastructure.Repository
       AddPagingParametres(command, filters.PagingInfo.PageNumber, filters.PagingInfo.PageSize);
       return command;
     }
+
   }
 }

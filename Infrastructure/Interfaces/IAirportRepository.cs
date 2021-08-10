@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Interfaces
 {
-  public interface IAirportRepository
+  public interface IAirportRepository : IRepository<Airport>
   {
-    Task<IEnumerable<Airport>> GetAllAirportsAsync();  
     Task<IEnumerable<Airport>> GetPagedAirports(PagingInfo filters);
-    Task<Airport> GetAirportByIATACodeAsync(string IATACode);
   }
 }

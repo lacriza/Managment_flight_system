@@ -51,7 +51,7 @@ namespace Infrastructure.Services
     {
       if (!string.IsNullOrEmpty(iata))
       {
-        var toIATA = await _airportRepository.GetAirportByIATACodeAsync(iata);
+        var toIATA = await _airportRepository.GetById(iata);
         if (toIATA.Code is null) throw new ArgumentException("Searched Airport Not Exist in DB.");
       }
     }

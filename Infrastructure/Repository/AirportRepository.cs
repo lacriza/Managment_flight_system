@@ -15,7 +15,7 @@ namespace Infrastructure.Repository
     {
     }
 
-    public async Task<IEnumerable<Airport>> GetAllAirportsAsync()
+    public async Task<IEnumerable<Airport>> GetAll()
     {
       List<Airport> airports = new List<Airport>();
 
@@ -36,7 +36,7 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<Airport> GetAirportByIATACodeAsync(string IATACode)
+    public async Task<Airport> GetById(string IATACode)
     {
       var airport = new Airport();
       string commandText = "SELECT TOP (1) [code], [name] FROM[Airport]" +
@@ -55,6 +55,37 @@ namespace Infrastructure.Repository
           airport.Name = rdr["name"].ToString();
         }
         return airport;
+      }
+    }
+
+    public async Task Insert(Airport entity)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "INSERT INTO Airport VALUES (@code, @name)", connection);
+
+        command.Parameters.Add(new SqlParameter("@code", entity.Code));
+        command.Parameters.Add(new SqlParameter("@name", entity.Name));
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
+      }
+    }
+
+    public async Task<Airport> Update(Airport entity)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand(
+          "UPDATE Airport SET name = @name  " +
+          "WHERE code = @code", connection);
+
+        command.Parameters.Add(new SqlParameter("@code", entity.Code));
+        command.Parameters.Add(new SqlParameter("@name", entity.Name));
+
+        command.CommandType = CommandType.Text;
+        await command.ExecuteNonQueryAsync();
+        return entity;
       }
     }
 
