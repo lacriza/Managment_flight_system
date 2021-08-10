@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Web;
 using Web.MapperProfile;
 using Web.Middleware;
 
@@ -41,6 +42,8 @@ namespace IsstaApi
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "IsstaApi", Version = "v1" });
       });
+      services.Configure<PriceOptions>(
+        Configuration.GetSection(PriceOptions.Price));
 
       services.AddSingleton(_ => Configuration);
       services.AddScoped<IFlightRepository, FlightRepository>();
