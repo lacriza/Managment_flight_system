@@ -72,7 +72,7 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<Airport> Update(Airport entity)
+    public async Task Update(Airport entity)
     {
       using (var connection = GetOpenConnection())
       {
@@ -85,7 +85,6 @@ namespace Infrastructure.Repository
 
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
-        return entity;
       }
     }
 

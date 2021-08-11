@@ -7,7 +7,7 @@ namespace Infrastructure.Interfaces
   {
     Task Insert(T entity);
 
-    Task<T> Update(T entity);
+    Task Update(T entity);
 
     Task<T> GetById(string id);
 

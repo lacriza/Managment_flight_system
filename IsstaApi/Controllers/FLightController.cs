@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using Core.POCO;
 using FluentValidation.Results;
-using Infrastructure;
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
-using IsstaApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Web.MapperProfile;

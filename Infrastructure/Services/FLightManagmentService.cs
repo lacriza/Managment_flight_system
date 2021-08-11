@@ -88,7 +88,7 @@ namespace Infrastructure.Services
       }
     }
 
-    public async Task<Flight> UpdateAsync(Flight flight)
+    public async Task UpdateAsync(Flight flight)
     {
       var flightForUpdating = await _flightRepository.GetById(flight.FlightNumber);
 
@@ -102,7 +102,7 @@ namespace Infrastructure.Services
 
       if (flight.ArrivalDateTime != default)
       {
-        flightForUpdating.DepartureDateTime = flight.ArrivalDateTime;
+        flightForUpdating.ArrivalDateTime = flight.ArrivalDateTime;
       }
 
       if (flight.FlightType != flightForUpdating.FlightType)
@@ -117,9 +117,7 @@ namespace Infrastructure.Services
 
       var res = MapType(flightForUpdating.FlightType, flightForUpdating, null);
       var resourse = _mapper.Map<Flight, Core.POCO.Flight>(res);
-      var result = await _flightRepository.Update(resourse);
-
-      return res;
+      await _flightRepository.Update(resourse);
     }
 
     private Flight MapType(FlightType type, Core.POCO.Flight flight, string[] comments)

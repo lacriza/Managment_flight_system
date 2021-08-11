@@ -57,7 +57,7 @@ namespace Infrastructure.Repository
       throw new NotImplementedException();
     }
 
-    public Task<Comment> Update(Comment entity)
+    public Task Update(Comment entity)
     {
       throw new NotImplementedException();
     }

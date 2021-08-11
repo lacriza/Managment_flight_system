@@ -105,7 +105,7 @@ namespace Infrastructure.Repository
       }
     }
 
-    public async Task<Flight> Update(Core.POCO.Flight flight)
+    public async Task Update(Flight flight)
     {
       using (var connection = GetOpenConnection())
       {
@@ -126,7 +126,6 @@ namespace Infrastructure.Repository
         command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
-        return flight;
       }
     }
 

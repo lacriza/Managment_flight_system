@@ -11,7 +11,7 @@ namespace Infrastructure.Interfaces
 
     Task<string> AddAsync(Flight flight);
 
-    Task<Flight> UpdateAsync(Flight flight);
+    Task UpdateAsync(Flight flight);
     Task<PagedResponse<List<Flight>>> ListAsync(Filters filters);
   }
 }

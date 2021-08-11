@@ -1,5 +1,4 @@
-﻿using Core.POCO;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Flight = Core.POCO.Flight;
