@@ -3,7 +3,18 @@
 @{
   ViewData["Title"] = "Index";
 }
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+<script type="text/javascript">
+  //$(document).ready(function () {
+  //  $jQuery.validator.addMethod("endDate", function (value, element) {
+  //    var startDate = $('.startDate').val();
+  //    return Date.parse(startDate) <= Date.parse(value) || value == "";
+  //  }, "* End date must be after start date");
+  //  $('#formId').validate();
+  //});
+</script>
 <table id="example1" class="table table-bordered table-striped"></table>
 <div class="container">
   <div class="row align-items-center">

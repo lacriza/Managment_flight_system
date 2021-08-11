@@ -68,7 +68,7 @@ namespace ClientMVC.Controllers
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<ActionResult> EditAsync(string id)
+    public async Task<ActionResult> Edit(string id)
     {
       var all = await _restHelper.GET<FlightViewModel>("/api/FLight/all");
       var flightForEdit = all.FirstOrDefault(f => f.FlightNumber == id);
@@ -81,8 +81,8 @@ namespace ClientMVC.Controllers
     {
         if (!ModelState.IsValid) 
         {
-          return PartialView("Edit", flightViewModel);
-        }
+        return PartialView("Edit", flightViewModel);
+      }
           var response = await _restHelper.PUT<FlightViewModel, FlightViewModel>("/api/FLight/update-flight", flightViewModel);
           return RedirectToAction(nameof(Index));
     }
