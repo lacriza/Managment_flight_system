@@ -64,18 +64,17 @@ namespace Infrastructure.Repository
     {
       using (var connection = GetOpenConnection())
       {
-        SqlCommand command = new SqlCommand(
-          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @total)", connection);
+        SqlCommand command = new SqlCommand("", connection);
+        command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
-        command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
-        command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
-        command.Parameters.Add(new SqlParameter("@depIATA", flight.DepartureAirportIATA));
-        command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
+        command.Parameters.Add(new SqlParameter("@flightno", flight.FlightNumber));
+        command.Parameters.Add(new SqlParameter("@depdate", flight.DepartureDateTime));
+        command.Parameters.Add(new SqlParameter("@arrdate", flight.ArrivalDateTime));
+        command.Parameters.Add(new SqlParameter("@depiata", flight.DepartureAirportIATA));
+        command.Parameters.Add(new SqlParameter("@arriata", flight.ArrivalAirportIATA));
         command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
-        command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@baseprice", flight.BasePriceNIS));
         command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
-        command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
       }
     }
