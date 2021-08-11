@@ -33,8 +33,8 @@ namespace ClientMVC.Validators
       RuleFor(request => request.ArrivalDateTime)
                .NotEmpty()
                .WithMessage("{PropertyName} is required")
-               .GreaterThanOrEqualTo(r => DateTime.UtcNow.Date.AddDays(-1))
-               .WithMessage("{PropertyName} must be today or grater");
+               .GreaterThan(r => r.DepartureDateTime)
+               .WithMessage("{PropertyName} must be grater then Departure DateTime");
 
       RuleFor(request => request.BasePriceNIS)
          .NotEmpty()

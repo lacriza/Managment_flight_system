@@ -4,11 +4,12 @@
   var id = @Model?.FlightNumber;
   string buttonId = $"#modal{id}";
   string modalId = $"modal{id}";
+  string submitId = $"#submit{id}";
 }
 
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+
+
 <button type="button" class="btn btn-navy shadow lift" data-toggle="modal" data-target=@buttonId>
   Edit Flight
 </button>
@@ -22,7 +23,7 @@
         </button>
       </div>
 
-      <form asp-action="Edit" class="column">
+      <form asp-action="Edit" class="column needs-validation" id="SampleForm" name="SampleForm">
         <div class="modal-body">
           @Html.HiddenFor(model => model.FlightNumber)
           <h5>Departure:  <span class="badge btn-navy">@Model?.DepartureAirportIATA</span></h5>
@@ -39,6 +40,9 @@
             @Html.LabelFor(model => model.ArrivalDateTime, "Arrival Date Time:", new { @class = "form-check-label" })
             @Html.EditorFor(model => model.ArrivalDateTime, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(m => m.ArrivalDateTime, "", new { @class = "text-error" })
+            <div id="myProfile">
+              
+            </div>
           </div>
 
           <div class="form-group">
@@ -63,14 +67,12 @@
             @Html.ValidationMessageFor(m => m.FlightType, "", new { @class = "text-error" })
           </div>
         </div>
-        @section Scripts {
-          @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        }
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-navy">Save changes</button>
+          <button type="submit" class="btn btn-navy"  >Save changes</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
