@@ -7,13 +7,13 @@
     slide: function (event, ui) {
       var to = ui.values[1];
       var from = ui.values[0];
-      $("#amount").val(from + "-" + to);
+      $("#amount").val(from + "₪-" + to + "₪");
       localStorage.setItem('priceFrom', from);
       localStorage.setItem('priceTo', to);
     }
   });
-  $("#amount").val($("#slider-range").slider("values", 0) + "-"
-    + $("#slider-range").slider("values", 1));
+  $("#amount").val($("#slider-range").slider("values", 0) + "₪-"
+    + $("#slider-range").slider("values", 1)) + "₪";
 });
 
 $('#myModal').on('shown.bs.modal', function () {

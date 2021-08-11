@@ -11,8 +11,10 @@ namespace Web.MapperProfile
       { var priceRangeArr = request.PriceRange.Split('-');
         if (priceRangeArr.Length > 0)
         {
-          request.PriceFromInNIS = Convert.ToDecimal(priceRangeArr[0]);
-          request.PriceToInNIS = Convert.ToDecimal(priceRangeArr[1]);
+          string trimmedFrom = priceRangeArr[0].TrimEnd(' ', '₪');
+          request.PriceFromInNIS = Convert.ToDecimal(trimmedFrom);
+          string trimmed = priceRangeArr[1].TrimEnd(' ', '₪');
+          request.PriceToInNIS = Convert.ToDecimal(trimmed);
         }
       }
 

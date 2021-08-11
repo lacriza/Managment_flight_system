@@ -8,7 +8,9 @@
 }
 
 
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
 <button type="button" class="btn btn-navy shadow lift" data-toggle="modal" data-target=@buttonId>
   Edit Flight
@@ -41,7 +43,7 @@
             @Html.EditorFor(model => model.ArrivalDateTime, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(m => m.ArrivalDateTime, "", new { @class = "text-error" })
             <div id="myProfile">
-              
+
             </div>
           </div>
 
@@ -69,7 +71,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-navy"  >Save changes</button>
+          <button type="submit" class="btn btn-navy">Save changes</button>
         </div>
       </form>
     </div>
