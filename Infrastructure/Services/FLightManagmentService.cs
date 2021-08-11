@@ -115,8 +115,11 @@ namespace Infrastructure.Services
         flightForUpdating.BasePriceNIS = flight.BasePriceNIS;
       }
 
-      var result = await _flightRepository.Update(flightForUpdating);
-      return flight;
+      var res = MapType(flightForUpdating.FlightType, flightForUpdating, null);
+      var resourse = _mapper.Map<Flight, Core.POCO.Flight>(res);
+      var result = await _flightRepository.Update(resourse);
+
+      return res;
     }
 
     private Flight MapType(FlightType type, Core.POCO.Flight flight, string[] comments)

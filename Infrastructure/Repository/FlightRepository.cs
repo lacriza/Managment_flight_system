@@ -65,7 +65,7 @@ namespace Infrastructure.Repository
       using (var connection = GetOpenConnection())
       {
         SqlCommand command = new SqlCommand(
-          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice)", connection);
+          "INSERT INTO Flight VALUES (@flightNo, @depDate, @arrDate, @depIATA, @arrIATA, @type, @basePrice, @total)", connection);
 
         command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
         command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
@@ -74,6 +74,7 @@ namespace Infrastructure.Repository
         command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
         command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
         command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+        command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
       }
@@ -114,7 +115,8 @@ namespace Infrastructure.Repository
           "departureDateTime = @depDate, " +
           "arrivalDateTime = @arrDate,  " +
           "flightType = @type, " +
-          "basePriceNIS = @basePrice " +
+          "basePriceNIS = @basePrice, " +
+          "totalPriceNIS = @total " +
           "WHERE flightNumber = @flightNo", connection);
 
         command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
@@ -122,7 +124,7 @@ namespace Infrastructure.Repository
         command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
         command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
         command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
-
+        command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
         command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
         return flight;
@@ -177,12 +179,12 @@ namespace Infrastructure.Repository
 
       if (filters.PriceFromInNIS != null)
       {
-        filter += "[basePriceNIS] >= @PriceFrom AND ";
+        filter += "[totalPriceNIS] >= @PriceFrom AND ";
       }
 
       if (filters.PriceToInNIS != null)
       {
-        filter += "[basePriceNIS] <=  @PriceTo AND ";
+        filter += "[totalPriceNIS] <=  @PriceTo AND ";
       }
 
       if (!string.IsNullOrEmpty(filters.ToAirportIATACode))

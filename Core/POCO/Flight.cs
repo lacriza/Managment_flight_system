@@ -17,7 +17,7 @@ namespace Core.POCO
 
     public decimal BasePriceNIS { get; set; }
 
-    //public decimal TotalPriceNIS { get; set; }
+    public decimal TotalPriceNIS { get; set; }
 
     public string[] Comments { get; set; }
   }
