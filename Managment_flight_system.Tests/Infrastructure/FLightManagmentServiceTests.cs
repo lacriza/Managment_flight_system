@@ -8,9 +8,11 @@ using Managment_flight_system.Tests.Common;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Flight = Infrastructure.Models.Flight;
 
 namespace Managment_flight_system.Tests.Infrastructure
 {
@@ -112,6 +114,86 @@ namespace Managment_flight_system.Tests.Infrastructure
       regular.TotalPriceNIS.Should().Be(regular.BasePriceNIS * 4);
       lowcost.TotalPriceNIS.Should().Be(lowcost.BasePriceNIS * 3);
       charter.TotalPriceNIS.Should().Be((charter.BasePriceNIS * 2) + 10);
+    }
+
+    [Test]
+    public void ListAsyncThrowArgumentExceptionIfAirportCodeNotExist()
+    {
+      // Arrange
+      Filters filters = FiltersCreator.CreateDefault();
+      filters.FromAirportIATACode = "YUY";
+
+      // Act, Assert
+      Assert.That(
+          async () => await _fLightManagmentService.ListAsync(filters),
+          Throws.ArgumentException.With.Message.EqualTo("Searched Airport Not Exist in DB."));
+
+    }
+
+    [Test]
+    public void ListAsyncThrowArgumentExceptionIfToAirportIATACodeNotExist()
+    {
+      // Arrange
+      Filters filters = FiltersCreator.CreateDefault();
+      filters.ToAirportIATACode = "YUY";
+
+      // Act, Assert
+      Assert.That(
+          async () => await _fLightManagmentService.ListAsync(filters),
+          Throws.ArgumentException.With.Message.EqualTo("Searched Airport Not Exist in DB."));
+
+    }
+
+    [Test]
+    public async Task ListAsyncReturnPagedResponseAsync()
+    {
+      // Arrange
+      Filters filters = FiltersCreator.CreateDefault();
+      filters.ToAirportIATACode = null;
+      filters.FromAirportIATACode = null;
+
+      var filtred = (_flights, 22);
+      _flightRepositoryMock.Setup(x => x.GetFiltredPagedFlightsAsync(It.IsAny<Filters>()))
+          .ReturnsAsync(filtred);
+
+      // Act
+      var result =  await _fLightManagmentService.ListAsync(filters);
+
+      // Assert
+      result.Data.Should().NotBeEmpty();
+      result.TotalRecords.Should().Be(22);
+      result.PageSize.Should().Be(2);
+      result.PageNumber.Should().Be(1);
+      result.PreviousPage.Should().Be(false);
+      result.NextPage.Should().Be(true);
+      result.TotalPages.Should().Be(11);
+    }
+
+    [Test]
+    public async Task UpdateAsyncDoesNotThrow()
+    {
+      // Arrange
+      var flightForUpdate = _flights.First();
+      var updated = new Flight()
+      {
+        FlightNumber = "AB445",
+        DepartureDateTime = DateTimeOffset.Now,
+        ArrivalDateTime = DateTimeOffset.Now.AddHours(5),
+        ArrivalAirportIATA = "AAQ",
+        DepartureAirportIATA = "BHG",
+        FlightType = FlightType.LowCost,
+        BasePriceNIS = 100.00M,
+        TotalPriceNIS = 90.00M
+      };
+
+      _flightRepositoryMock.Setup(x => x.GetById(It.IsAny<string>()))
+         .ReturnsAsync(flightForUpdate);
+
+      // Assert
+      //Assert.DoesNotThrow(async () => await _fLightManagmentService.UpdateAsync(updated));
+
+      Func<Task> sutMethod = async () => { await _fLightManagmentService.UpdateAsync(updated); };
+      sutMethod.Should().NotThrow();
     }
   }
 }
