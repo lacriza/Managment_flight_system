@@ -61,5 +61,10 @@ namespace Infrastructure.Repository
     {
       throw new NotImplementedException();
     }
+
+    public Task Delete(string id)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

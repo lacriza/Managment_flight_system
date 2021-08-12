@@ -12,5 +12,7 @@ namespace Infrastructure.Interfaces
     Task<T> GetById(string id);
 
     Task<IEnumerable<T>> GetAll();
+
+    Task Delete(string id);
   }
 }

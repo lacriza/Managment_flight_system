@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "..\Infras
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{EA74830A-E460-4CFB-B987-102D0C21337C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientMVC", "..\ClientMVC\ClientMVC.csproj", "{7BA90E28-DE98-42CB-B38C-F5EAB92F4FFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientMVC", "..\ClientMVC\ClientMVC.csproj", "{7BA90E28-DE98-42CB-B38C-F5EAB92F4FFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Managment_flight_system.Tests", "..\Managment_flight_system.Tests\Managment_flight_system.Tests.csproj", "{73D224C0-F83C-46A8-B9E7-55A7AB045DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{7BA90E28-DE98-42CB-B38C-F5EAB92F4FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BA90E28-DE98-42CB-B38C-F5EAB92F4FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BA90E28-DE98-42CB-B38C-F5EAB92F4FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73D224C0-F83C-46A8-B9E7-55A7AB045DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D224C0-F83C-46A8-B9E7-55A7AB045DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D224C0-F83C-46A8-B9E7-55A7AB045DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D224C0-F83C-46A8-B9E7-55A7AB045DFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

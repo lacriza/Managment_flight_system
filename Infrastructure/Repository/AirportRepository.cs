@@ -111,5 +111,16 @@ namespace Infrastructure.Repository
         return airports;
       }
     }
+
+    public async Task Delete(string id)
+    {
+        using (var connection = GetOpenConnection())
+        {
+          SqlCommand command = new SqlCommand(
+          "DELETE FROM Airport WHERE code = @code", connection);
+          command.Parameters.Add(new SqlParameter("@code", id));
+          await command.ExecuteNonQueryAsync();
+        }
+    }
   }
 }

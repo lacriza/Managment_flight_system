@@ -260,5 +260,9 @@ namespace Infrastructure.Repository
       return command;
     }
 
+    public Task Delete(string id)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

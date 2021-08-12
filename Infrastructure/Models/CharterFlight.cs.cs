@@ -20,7 +20,7 @@ namespace Infrastructure.Models
 
     {
       Comments = comments;
-      TotalPriceNIS = BasePriceNIS * Convert.ToDecimal(options.Charter) + Convert.ToDecimal(options.CharterFixed);
+      TotalPriceNIS = (BasePriceNIS * Convert.ToDecimal(options.Charter)) + Convert.ToDecimal(options.CharterFixed);
       FlightType = FlightType.Charter;
     }
 
