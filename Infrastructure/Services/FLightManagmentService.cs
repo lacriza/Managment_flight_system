@@ -64,7 +64,6 @@ namespace Infrastructure.Services
       return pagedList;
     }
 
-
     public async Task<string> AddAsync(Flight flight)
     {
       await ValidateAirportsCodesAsync(flight.DepartureAirportIATA);
@@ -149,7 +148,7 @@ namespace Infrastructure.Services
                           flight.BasePriceNIS,
                           comments,
                           _options),
-        _ => new RegularFlight(),
+        _ => _mapper.Map<Core.POCO.Flight, Flight>(flight),
       };
     }
   }

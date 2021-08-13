@@ -41,30 +41,63 @@ namespace Infrastructure.Repository
     {
       using (var connection = GetOpenConnection())
       {
-        SqlCommand command = new SqlCommand(
-          "INSERT INTO Comments VALUES (@id, @flightType, @comment)", connection);
+        SqlCommand command = new SqlCommand("stpInsertComment", connection);
+        command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.Add(new SqlParameter("@id", entity.CommentId));
+        command.Parameters.Add(new SqlParameter("@commentId", entity.CommentId));
         command.Parameters.Add(new SqlParameter("@flightType", entity.FlightType));
         command.Parameters.Add(new SqlParameter("@comment", entity.Text));
-        command.CommandType = CommandType.Text;
         await command.ExecuteNonQueryAsync();
       }
     }
 
-    public Task<Comment> GetById(string id)
+    public async Task<Comment> GetById(string id)
     {
-      throw new NotImplementedException();
+      int idDb = Convert.ToInt32(id);
+
+      Comment comment = new Comment();
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand("stpGetCommentById", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.Add(new SqlParameter("@commentId", idDb));
+
+        SqlDataReader rdr = command.ExecuteReader();
+        while (await rdr.ReadAsync())
+        {
+          comment.Text = rdr["comment"].ToString();
+          comment.FlightType = (FlightType)Convert.ToInt32(rdr["flightType"]);
+          comment.CommentId = Convert.ToInt32(rdr["commentId"]);
+        }
+        return comment;
+      }
     }
 
-    public Task Update(Comment entity)
+    public async Task Update(Comment entity)
     {
-      throw new NotImplementedException();
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand("stpUpdateComment", connection);
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.Add(new SqlParameter("@commentId", entity.CommentId));
+        command.Parameters.Add(new SqlParameter("@flightType", entity.FlightType));
+        command.Parameters.Add(new SqlParameter("@comment", entity.Text));
+        await command.ExecuteNonQueryAsync();
+      }
     }
 
-    public Task Delete(string id)
+    public async Task Delete(string id)
     {
-      throw new NotImplementedException();
+      int idDb = Convert.ToInt32(id);
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand("stpDeleteComment", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.Add(new SqlParameter("@commentId", idDb));
+
+        await command.ExecuteNonQueryAsync();
+      }
     }
   }
 }

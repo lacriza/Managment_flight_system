@@ -11,6 +11,7 @@ namespace Web.MapperProfile
   {
     public MapperProfile()
     {
+      CreateMap<CommentRequest, Comment>();
       CreateMap<Airport, AirportResponse>();
       CreateMap<AddFlightRequest, Flight>();
       CreateMap<UpdateFlightRequest, Flight>();

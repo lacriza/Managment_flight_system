@@ -122,6 +122,8 @@ namespace Managment_flight_system.Tests.Infrastructure
       // Arrange
       Filters filters = FiltersCreator.CreateDefault();
       filters.FromAirportIATACode = "YUY";
+      _airportRepositoryMock.Setup(x => x.GetById(It.IsAny<string>()))
+      .ReturnsAsync((Airport)null);
 
       // Act, Assert
       Assert.That(
@@ -136,7 +138,9 @@ namespace Managment_flight_system.Tests.Infrastructure
       // Arrange
       Filters filters = FiltersCreator.CreateDefault();
       filters.ToAirportIATACode = "YUY";
-
+      _airportRepositoryMock.Setup(x => x.GetById(It.IsAny<string>()))
+     .ReturnsAsync((Airport)null);
+     
       // Act, Assert
       Assert.That(
           async () => await _fLightManagmentService.ListAsync(filters),
@@ -156,6 +160,7 @@ namespace Managment_flight_system.Tests.Infrastructure
       _flightRepositoryMock.Setup(x => x.GetFiltredPagedFlightsAsync(It.IsAny<Filters>()))
           .ReturnsAsync(filtred);
 
+
       // Act
       var result =  await _fLightManagmentService.ListAsync(filters);
 
@@ -170,7 +175,7 @@ namespace Managment_flight_system.Tests.Infrastructure
     }
 
     [Test]
-    public async Task UpdateAsyncDoesNotThrow()
+    public void UpdateAsyncDoesNotThrow()
     {
       // Arrange
       var flightForUpdate = _flights.First();
@@ -190,10 +195,100 @@ namespace Managment_flight_system.Tests.Infrastructure
          .ReturnsAsync(flightForUpdate);
 
       // Assert
-      //Assert.DoesNotThrow(async () => await _fLightManagmentService.UpdateAsync(updated));
-
       Func<Task> sutMethod = async () => { await _fLightManagmentService.UpdateAsync(updated); };
       sutMethod.Should().NotThrow();
+    }
+
+
+    [Test]
+    public void AddAsyncThrowArgumentExceptionIfAirportCodeNotExist()
+    {
+      // Arrange
+      var flight = new Flight()
+      {
+        FlightNumber = "AB445",
+        DepartureDateTime = DateTimeOffset.Now,
+        ArrivalDateTime = DateTimeOffset.Now.AddHours(5),
+        ArrivalAirportIATA = "BHG",
+        DepartureAirportIATA = "YUY",
+        FlightType = FlightType.LowCost,
+        BasePriceNIS = 100.00M,
+        TotalPriceNIS = 90.00M
+      };
+
+      // Act, Assert
+      Assert.That(
+          async () => await _fLightManagmentService.AddAsync(flight),
+          Throws.ArgumentException.With.Message.EqualTo("Searched Airport Not Exist in DB."));
+
+    }
+
+    [Test]
+    public void AddAsyncThrowArgumentExceptionIfToAirportIATACodeNotExist()
+    {
+      // Arrange
+      var flight = new Flight()
+      {
+        FlightNumber = "AB445",
+        DepartureDateTime = DateTimeOffset.Now,
+        ArrivalDateTime = DateTimeOffset.Now.AddHours(5),
+        ArrivalAirportIATA = "YUY",
+        DepartureAirportIATA = "BHG",
+        FlightType = FlightType.LowCost,
+        BasePriceNIS = 100.00M,
+        TotalPriceNIS = 90.00M
+      };
+
+
+      // Act, Assert
+      Assert.That(
+          async () => await _fLightManagmentService.AddAsync(flight),
+          Throws.ArgumentException.With.Message.EqualTo("Searched Airport Not Exist in DB."));
+
+    }
+
+    [Test]
+    public async Task AddGenerateFlightNumberAsync()
+    {
+      // Arrange
+      var flight = new Flight()
+      {
+        FlightNumber = "AB445",
+        DepartureDateTime = DateTimeOffset.Now,
+        ArrivalDateTime = DateTimeOffset.Now.AddHours(5),
+        ArrivalAirportIATA = "KBP",
+        DepartureAirportIATA = "TLV",
+        FlightType = FlightType.LowCost,
+        BasePriceNIS = 100.00M,
+        TotalPriceNIS = 90.00M
+      };
+
+      _airportRepositoryMock.Setup(x => x.GetById(It.IsAny<string>()))
+         .ReturnsAsync(new Airport { Code = "TLV", Name = "TLV" });
+      
+      _mapperMock.Setup(x => x.Map<Flight, Core.POCO.Flight>(It.IsAny<Flight>()))
+        .Returns(_flights.First());
+
+      // Act
+      var result = await _fLightManagmentService.AddAsync(flight);
+
+      // Assert
+      result.Should().StartWith("TK");
+      result.Length.Should().BeGreaterOrEqualTo(3);
+    }
+
+    [Test]
+    public void UpdateAsyncThrowArgumentException()
+    {
+      // Arrange
+      Core.POCO.Flight updated = null;
+      _flightRepositoryMock.Setup(x => x.GetById(It.IsAny<string>()))
+         .ReturnsAsync(updated);
+      
+      // Act, Assert
+      Assert.That(
+          async () => await _fLightManagmentService.UpdateAsync(new Flight() { FlightNumber = "123"}),
+          Throws.ArgumentException.With.Message.EqualTo("This Flight Number does not exist in DB."));
     }
   }
 }

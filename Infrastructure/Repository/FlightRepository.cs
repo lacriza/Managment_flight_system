@@ -62,21 +62,29 @@ namespace Infrastructure.Repository
 
     public async Task Insert(Flight flight)
     {
-      using (var connection = GetOpenConnection())
+      try
       {
-        SqlCommand command = new SqlCommand("", connection);
-        command.CommandType = CommandType.StoredProcedure;
+        using (var connection = GetOpenConnection())
+        {
+          SqlCommand command = new SqlCommand("stpInsertFlight", connection);
+          command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.Add(new SqlParameter("@flightno", flight.FlightNumber));
-        command.Parameters.Add(new SqlParameter("@depdate", flight.DepartureDateTime));
-        command.Parameters.Add(new SqlParameter("@arrdate", flight.ArrivalDateTime));
-        command.Parameters.Add(new SqlParameter("@depiata", flight.DepartureAirportIATA));
-        command.Parameters.Add(new SqlParameter("@arriata", flight.ArrivalAirportIATA));
-        command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
-        command.Parameters.Add(new SqlParameter("@baseprice", flight.BasePriceNIS));
-        command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
-        await command.ExecuteNonQueryAsync();
+          command.Parameters.Add(new SqlParameter("@flightNo", flight.FlightNumber));
+          command.Parameters.Add(new SqlParameter("@depDate", flight.DepartureDateTime));
+          command.Parameters.Add(new SqlParameter("@arrDate", flight.ArrivalDateTime));
+          command.Parameters.Add(new SqlParameter("@depIATA", flight.DepartureAirportIATA));
+          command.Parameters.Add(new SqlParameter("@arrIATA", flight.ArrivalAirportIATA));
+          command.Parameters.Add(new SqlParameter("@type", flight.FlightType));
+          command.Parameters.Add(new SqlParameter("@basePrice", flight.BasePriceNIS));
+          command.Parameters.Add(new SqlParameter("@total", flight.TotalPriceNIS));
+          await command.ExecuteNonQueryAsync();
+        }
       }
+      catch (Exception e)
+      {
+        throw e;
+      }
+     
     }
 
     public async Task<Flight> GetById(string flightId)
@@ -152,6 +160,18 @@ namespace Infrastructure.Repository
           flightList.Add(flight);
         }
         return (flightList, total);
+      }
+    }
+
+    public async Task Delete(string id)
+    {
+      using (var connection = GetOpenConnection())
+      {
+        SqlCommand command = new SqlCommand("stpDeleteFlight", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.Add(new SqlParameter("@flightNo", id));
+
+        await command.ExecuteNonQueryAsync();
       }
     }
 
@@ -260,9 +280,6 @@ namespace Infrastructure.Repository
       return command;
     }
 
-    public Task Delete(string id)
-    {
-      throw new NotImplementedException();
-    }
+
   }
 }
