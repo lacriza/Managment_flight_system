@@ -26,10 +26,6 @@
       <form asp-action="Edit" class="column needs-validation" id="formId">
 
         <div class="modal-body">
-          <input type="text" name="field1" />
-          <br />
-          <input type="text" name="field2" />
-          <br />
           @Html.HiddenFor(model => model.FlightNumber)
           <h5>Departure:  <span class="badge btn-navy">@Model?.DepartureAirportIATA</span></h5>
           <h5>Arrival: <span class="badge btn-navy">@Model?.ArrivalAirportIATA</span></h5>
